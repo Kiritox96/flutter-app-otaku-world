@@ -28,7 +28,12 @@ dependencies:
   flip_card: ^0.4.4
   connection_status_bar: ^1.1.1
   page_indicator: ^0.3.0
+  badges: ^1.1.0
+  hive: ^1.0.0
+  path_provider: ^1.3.0
+  fluttertoast: ^2.1.4
 dev_dependencies:
+
   flutter_test:
     sdk: flutter
 

@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'rest_api.dart';
+import 'anime.dart';
 
 class ListAdvancedPage extends StatefulWidget {
   final String url;
@@ -54,12 +53,17 @@ class _ListAdvancedPageState extends State<ListAdvancedPage> {
                 return new ListView.builder(
                   itemCount: all.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return new Container(
-                      height: 175,
-                      width: MediaQuery.of(context).size.width,
-                      margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-                      decoration: dec(all[index]['image']),
+                    return new GestureDetector(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(all[index])));
+                      },
+                      child: Container(
+                        height: 175,
+                        width: MediaQuery.of(context).size.width,
+                        margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+                        decoration: dec(all[index]['image']),
 
+                      ),
                     );
                   },
                 );

@@ -1,10 +1,17 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
 import 'splash.dart';
 import 'home.dart';
 import 'calendario.dart';
-import 'list.dart';
-void main() => runApp(new MyApp());
+import 'package:path_provider/path_provider.dart';
+
+void main() async {
+  Directory appDocDir = await getApplicationDocumentsDirectory();
+  Hive.init(appDocDir.path);
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   // Applcation context APP
@@ -13,7 +20,6 @@ class MyApp extends StatelessWidget {
 
     // Fixing App Orientation.
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-
     return new MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
@@ -29,4 +35,5 @@ class MyApp extends StatelessWidget {
       },
     );
   }
+
 }

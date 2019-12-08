@@ -10,7 +10,6 @@ import 'login.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:connection_status_bar/connection_status_bar.dart';
-
 class HomePage extends StatefulWidget {
   @override
   HomePageState createState() => HomePageState();
@@ -212,7 +211,6 @@ class _MainPageState extends State<MainPage> {
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-
                     Container(
                       margin: EdgeInsets.only(
                         right: 10.0,
@@ -220,11 +218,7 @@ class _MainPageState extends State<MainPage> {
                         top: 10.0,
                         bottom: 0
                       ),
-
-
                     )
-
-
                   ]
                 )
               )
@@ -264,13 +258,13 @@ class _MainPageState extends State<MainPage> {
           mainAxisSize: MainAxisSize.max,
           children:[
             Container(
-                margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-                child: new Text("Elenco anime",style: TextStyle(color:Colors.white,fontSize: 25.0,fontWeight: FontWeight.bold))
+              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+              child: new Text("Elenco anime",style: TextStyle(color:Colors.white,fontSize: 25.0,fontWeight: FontWeight.bold))
             ),
             Container(
 
-                margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-                child: new Icon(Icons.arrow_forward_ios)
+              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+              child: new Icon(Icons.arrow_forward_ios)
             )
           ]
         )
@@ -297,7 +291,6 @@ class _MainPageState extends State<MainPage> {
                       child: new Text("Effettua il login",style: TextStyle(color:Colors.white,fontSize: 25.0,fontWeight: FontWeight.bold))
                   ),
                   Container(
-
                       margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
                       child: new Icon(Icons.arrow_forward_ios)
                   )
@@ -313,6 +306,7 @@ class _MainPageState extends State<MainPage> {
       child: new FutureBuilder(
         future: Future.wait([ ApiService.getAnimeEvidenza(),ApiService.getAnimeSuggeriti(),ApiService.getToday()]),
         builder: (context, snapshot) {
+
           print(snapshot.error);
           if (snapshot.hasData) {
             //Filter anime evidenza
