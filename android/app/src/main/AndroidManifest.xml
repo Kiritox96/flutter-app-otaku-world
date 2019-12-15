@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.hello">
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
@@ -7,8 +8,10 @@
          additional functionality it is fine to subclass or reimplement
          FlutterApplication and put your custom class here. -->
     <application
+        tools:replace="android:appComponentFactory"
         android:name="io.flutter.app.FlutterApplication"
         android:label="hello"
+        android:appComponentFactory="androidx"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

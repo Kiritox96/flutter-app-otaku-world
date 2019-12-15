@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
+import 'package:animated_splash/animated_splash.dart';
+
+import 'home.dart';
 
 class SplashPage extends StatefulWidget {
 
@@ -9,27 +11,16 @@ class SplashPage extends StatefulWidget {
 
 class SplashPageState extends State<SplashPage> {
 
-  //From SplashPage to HomePage
-  void navigationToNextPage() {
-    Navigator.pushNamed(context, '/HomePage');
-  }
-  //Delay 5 secondi
-  startSplashScreenTimer() async {
-    var _duration = new Duration(seconds: 5);
-    return new Timer(_duration, navigationToNextPage);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    startSplashScreenTimer();
-  }
-
   @override
   Widget build(BuildContext context) {
 
     return Container(
-      child: new Text("ciao")
+      child: AnimatedSplash(
+        imagePath: 'assets/logo.png',
+        home: HomePage(),
+        duration: 2500,
+        type: AnimatedSplashType.StaticDuration,
+      ),
     );
   }
 }

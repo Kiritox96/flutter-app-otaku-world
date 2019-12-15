@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
+import 'package:hello/video.dart';
 import 'package:hive/hive.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 class AnimePage extends StatefulWidget {
@@ -14,9 +15,9 @@ class _AnimePageState extends State<AnimePage> {
     Fluttertoast.showToast(
       msg: txt,
       toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.CENTER,
+      gravity: ToastGravity.BOTTOM,
       timeInSecForIos: 1,
-      backgroundColor: Colors.red,
+      backgroundColor: Colors.black,
       textColor: Colors.white
     );
 
@@ -82,7 +83,18 @@ class _AnimePageState extends State<AnimePage> {
         itemBuilder: (context, index) {
           return new GestureDetector(
             onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(this.anime)));
+              /*
+              var activity = {
+                "anime" : this.anime,
+                "episodio" : this.anime['episodi'][index]
+              };
+              this.putActivity(activity);
+               */
+              var video = {
+                "anime" : this.anime,
+                "episodio" : this.anime['episodi'][index],
+              };
+              Navigator.push(context, MaterialPageRoute(builder: (context) => VideoPage(video)));
             },
             child: new Container(
               height:35,
@@ -108,19 +120,23 @@ class _AnimePageState extends State<AnimePage> {
         },
       );
     }
-    return new Container(
-        width: MediaQuery.of(context).size.width,
-        margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-        child: new Text("Non sono ancora stati caricati episodi per questo anime",textAlign:TextAlign.center,style: TextStyle(color:Colors.grey,fontSize: 15.0,fontWeight: FontWeight.bold))
+    return new Center(
+      child: Container(
+          width: MediaQuery.of(context).size.width,
+          margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+          child: new Text("Non sono ancora stati caricati episodi per questo anime",textAlign:TextAlign.center,style: TextStyle(color:Colors.black,fontSize: 24.0,fontWeight: FontWeight.bold))
+      )
     );
 
   }
 
-
+  void putActivity(dynamic activity) async {
+    var box = await Hive.openBox('activities');
+    box.add(activity);
+  }
 
   @override
   Widget build(BuildContext context) {
-    List generi = this.anime['genere'];
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(this.anime['name'])
@@ -169,47 +185,29 @@ class _AnimePageState extends State<AnimePage> {
                       new GestureDetector(
                         onTap: () async {
                           var box = await Hive.openBox('animes');
-                          if(box.values.contains(this.anime)){
-                            box.delete(this.anime);
+                          var index = -1;
+                          index = box.values.toList().indexOf(this.anime);
+                          print(box.keys);
+                          if(index != -1){
+                            box.deleteAt(index);
                             this.showToast("Anime tolto dai preferiti");
                           }
                           else{
                             box.add(this.anime);
                             this.showToast("Anime aggiunto dai preferiti");
                           }
-
-
-                          /*if(index == -1){
-                            list.add(this.anime);
-                            Barbarian.write('animes', list);
-                            Scaffold.of(context).showSnackBar(SnackBar(content: Text("Anime aggiunto ai preferiti")));
-                          }
-                          else{
-                            list.removeAt(index);
-                            Scaffold.of(context).showSnackBar(SnackBar(content: Text("Anime tolto dai preferiti")));
-                          }*/
-
-
                         },
-                        child: Container(child: new Icon(Icons.star))
-                      ),
-                      Container(
-                        child: new Icon(Icons.question_answer)
+                        child: Container(child: new IconTheme(
+                          data: new IconThemeData(color: Colors.yellow),
+                          child: new Icon(Icons.star),
+                        ))
                       ),
                       Container(
                         child: new Icon(Icons.share)
                       ),
                     ]
                   )
-                ),
-                Divider(height: 2, color: Colors.black),
-                Container(
-                  height:30,
-                  width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.only(right: 5.0, left: 5.0, top: 5.0, bottom: 5.0),
-                  child: new Text("Commenti",textAlign:TextAlign.start,style: TextStyle(color:Colors.black,fontSize: 25.0,fontWeight: FontWeight.bold))
-                ),
-                commenti()
+                )
               ]
             )
           )
@@ -217,17 +215,10 @@ class _AnimePageState extends State<AnimePage> {
       )
     );
   }
+
   @override
   void dispose() {
     Hive.close();
     super.dispose();
-  }
-  Widget commenti(){
-    return new Container(
-      height:30,
-      width: MediaQuery.of(context).size.width,
-      margin: EdgeInsets.only(right: 5.0, left: 5.0, top: 5.0, bottom: 5.0),
-      child: new Text("Per il momento non vi sono commenti su questo anime",textAlign:TextAlign.center,style: TextStyle(color:Colors.grey,fontSize: 15.0,fontWeight: FontWeight.bold))
-    );
   }
 }

@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:hello/activity.dart';
 import 'package:hello/login.dart';
 import 'package:hello/ricerca.dart';
+import 'package:hive/hive.dart';
+import 'anime.dart';
 import 'rest_api.dart';
 import 'calendario.dart';
 import 'list.dart';
 import 'ricerca.dart';
+import 'SemplificataPage.dart';
+import 'package:image_ink_well/image_ink_well.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'login.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flip_card/flip_card.dart';
 import 'package:connection_status_bar/connection_status_bar.dart';
 class HomePage extends StatefulWidget {
   @override
@@ -17,14 +22,38 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
 
+  RefreshController _refreshController = RefreshController(initialRefresh: false);
+  void _onRefresh() async{
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use refreshFailed()
+    _refreshController.refreshCompleted();
+  }
 
+  void _onLoading() async{
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+    if(mounted){
+      setState(() {});
+    }
+    _refreshController.loadComplete();
+  }
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       extendBody: true,
       backgroundColor: Colors.white,
 
-      body: MainPage()
+      body: SmartRefresher(
+        enablePullDown: true,
+        //enablePullUp: true,
+        header: WaterDropHeader(),
+        controller: _refreshController,
+        onRefresh: _onRefresh,
+        onLoading: _onLoading,
+        child: MainPage()
+      )
     );
   }
 }
@@ -38,7 +67,6 @@ class MainPage extends StatefulWidget {
 
 
 class _MainPageState extends State<MainPage> {
-
   BoxDecoration dec(String img) {
     return new BoxDecoration(
       image: new DecorationImage(
@@ -69,16 +97,36 @@ class _MainPageState extends State<MainPage> {
       color: Colors.blueAccent
     );
   }
+  BoxDecoration decFlipGrey() {
+    return new BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+        boxShadow: [
+          new BoxShadow(
+            color: Colors.black45,
+            offset: new Offset(5.0, 4.0),
+            blurRadius: 2.0,
+          )
+        ],
+        color: Colors.blueGrey
+    );
+  }
+
   Widget evidenza(List cans) {
     return new CarouselSlider(
       height: 175.0,
       items: cans.map((i) {
         return Builder(
           builder: (BuildContext context) {
-            return Container(
-              width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 0, bottom: 10.0),
-              decoration: dec(i['image']),
+            return  GestureDetector(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(i)));
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 0, bottom: 10.0),
+                decoration: dec(i['image']),
+
+              )
             );
           },
         );
@@ -91,11 +139,16 @@ class _MainPageState extends State<MainPage> {
       items: done.map((i) {
         return Builder(
           builder: (BuildContext context) {
-            return Container(
-              width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 0, bottom: 10.0),
-              decoration: dec(i['image']),
+            return  GestureDetector(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(i)));
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 0, bottom: 10.0),
+                decoration: dec(i['image']),
 
+              )
             );
           },
         );
@@ -117,7 +170,6 @@ class _MainPageState extends State<MainPage> {
       height: 400,
       child: Column(
         children: [
-
           Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -126,37 +178,56 @@ class _MainPageState extends State<MainPage> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-                    decoration: dec(today[0]['image']),
-                    width: (x/2)-20,
-                    height: 150,
+                 GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(today[0])));
+                    },
+                    child :Container(
+                      margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+                      decoration: dec(today[0]['image']),
+                      width: (x/2)-20,
+                      height: 150,
+                    )
                   ),
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-                    decoration: dec(today[1]['image']),
-                    width: (x/2)-20,
-                    height: 150,
-                  )
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(today[1])));
+                    },
+                    child :Container(
+                      margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+                      decoration: dec(today[1]['image']),
+                      width: (x/2)-20,
+                      height: 150,
+                    )
+                  ),
                 ]
               ),
               Column(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-                    decoration: dec(today[2]['image']),
-                    width: (x/2)-20,
-                    height: 150,
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(today[2])));
+                    },
+                    child :Container(
+                      margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+                      decoration: dec(today[2]['image']),
+                      width: (x/2)-20,
+                      height: 150,
+                    )
                   ),
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-                    decoration: dec(today[3]['image']),
-                    width: (x/2)-20,
-                    height: 150,
-                  ),
-
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(today[3])));
+                    },
+                    child :Container(
+                      margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+                      decoration: dec(today[3]['image']),
+                      width: (x/2)-20,
+                      height: 150,
+                    )
+                  )
                 ]
               )
             ]
@@ -188,46 +259,79 @@ class _MainPageState extends State<MainPage> {
       )
     );
   }
-  Container flipCard() {
-    return new Container(
-      margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 0),
-      height: 200,
-      width: MediaQuery.of(context).size.width,
-      child: new FlipCard(
-        direction: FlipDirection.HORIZONTAL, // default
-        front: Container(
-          decoration: decFlip(),
-          child: Center(child: new Text("Scopri il nostro repertorio di anime", style: TextStyle(fontSize: 20.0), textAlign: TextAlign.center))
-        ),
-        back: Container(
-          decoration: decFlip(),
-          child: Center(
-            child: Container(
-              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 0),
+  Future<List<dynamic>> getPreferiti() async {
+    var box = await Hive.openBox('animes');
+    return box.values.toList();
+  }
+  Widget preferiti(List preferiti){
+    if (preferiti.length > 2) {
+      return new Container(
+        width: MediaQuery.of(context).size.width,
+        margin: EdgeInsets.all(10.0),
+        child:Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
               width: MediaQuery.of(context).size.width,
-              height: 200,
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(
-                        right: 10.0,
-                        left: 10.0,
-                        top: 10.0,
-                        bottom: 0
-                      ),
-                    )
-                  ]
-                )
+              margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+              child: new Text("I tuoi preferiti",textAlign:TextAlign.left,style: TextStyle(fontSize: 25.0,fontWeight: FontWeight.bold))
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+              child:Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  CircleImageInkWell(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(preferiti[0])));
+                    },
+                    size: MediaQuery.of(context).size.width/4,
+                    image: NetworkImage(preferiti[0]['image']),
+                    splashColor: Colors.white24,
+                  ),
+                  CircleImageInkWell(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(preferiti[1])));
+                    },
+                    size:  MediaQuery.of(context).size.width/4,
+                    image: NetworkImage(preferiti[1]['image']),
+                    splashColor: Colors.white24,
+                  ),
+                  CircleImageInkWell(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(preferiti[2])));
+                    },
+                    size:  MediaQuery.of(context).size.width/4,
+                    image: NetworkImage(preferiti[2]['image']),
+                    splashColor: Colors.white24,
+                  )
+                ],
               )
-            )
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+              child: new Text("Visualizza tutti i preferiti",textAlign:TextAlign.right,style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold))
+            ),
 
-          ),
+          ]
         )
-      )
-    );
+      );
+    }
+    else{
+      return new Container(
+        decoration: decFlipGrey(),
+        height:50,
+        width: MediaQuery.of(context).size.width,
+        margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+        child: Center(
+          child:new Text("Non ci sono preferiti",textAlign:TextAlign.center,style: TextStyle(color:Colors.white,fontSize: 18.0,fontWeight: FontWeight.bold))
+        )
+      );
+    }
+
   }
   Container logo(){
     return new Container(
@@ -272,47 +376,59 @@ class _MainPageState extends State<MainPage> {
     );
 
   }
+
   Widget login(){
     return new GestureDetector(
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
-        },
-        child: new Container(
-            height:50,
-            decoration: decFlip(),
-            width: MediaQuery.of(context).size.width,
-            margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.max,
-                children:[
-                  Container(
-                      margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-                      child: new Text("Effettua il login",style: TextStyle(color:Colors.white,fontSize: 25.0,fontWeight: FontWeight.bold))
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-                      child: new Icon(Icons.arrow_forward_ios)
-                  )
-                ]
+      onTap: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+      },
+      child: new Container(
+        height:50,
+        decoration: decFlip(),
+        width: MediaQuery.of(context).size.width,
+        margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          children:[
+            Container(
+                margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+                child: new Text("Effettua il login",style: TextStyle(color:Colors.white,fontSize: 25.0,fontWeight: FontWeight.bold))
+            ),
+            Container(
+                margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+                child: new Icon(Icons.arrow_forward_ios)
             )
+          ]
         )
+      )
     );
 
   }
-  @override
-  Widget build(BuildContext context) {
-    return new Container(
-      child: new FutureBuilder(
-        future: Future.wait([ ApiService.getAnimeEvidenza(),ApiService.getAnimeSuggeriti(),ApiService.getToday()]),
-        builder: (context, snapshot) {
 
-          print(snapshot.error);
+  Widget activity(){
+    return new GestureDetector(
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => ActivityPage()));
+        },
+        child: Container(
+            width: MediaQuery.of(context).size.width,
+            margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 20.0, bottom: 20.0),
+            child: new Text("Visualizza attività precedenti",textAlign:TextAlign.center,style: TextStyle(color:Colors.blueAccent,fontSize: 18.0,fontWeight: FontWeight.bold))
+        )
+    );
+  }
+
+  Widget albero(){
+    return new FutureBuilder(
+        future: Future.wait([ ApiService.getAnimeEvidenza(),ApiService.getAnimeSuggeriti(),ApiService.getToday(),this.getPreferiti()]),
+        builder: (context, snapshot) {
           if (snapshot.hasData) {
-            //Filter anime evidenza
             List ev = snapshot.data[0];
             List sug = snapshot.data[1];
             var today = snapshot.data[2];
+            List pref = snapshot.data[3];
+
             return new SingleChildScrollView(
               child: new ConstrainedBox(
                 constraints: new BoxConstraints(),
@@ -320,27 +436,80 @@ class _MainPageState extends State<MainPage> {
                   children: [
                     ConnectionStatusBar(),
                     logo(),
+                    preferiti(pref),
                     elenco(),
                     avanzata(),
                     testo("Evidenza"),
                     evidenza(ev),
                     testo("Suggeriti"),
                     suggeriti(sug),
+                    activity(),
                     login(),
                     testo("Usciti oggi"),
-                    grid(today['giorno'])
+                    grid(today['giorno']),
+                    semplificata()
                   ]
                 )
               )
             );
-
           }
-          return Center(
-            child: CircularProgressIndicator(),
-          );
+          return waiting();
         }
+    );
+  }
+  Widget semplificata(){
+    return new GestureDetector(
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => SemplificataPage()));
+        },
+        child: Container(
+            width: MediaQuery.of(context).size.width,
+            margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 20.0, bottom: 20.0),
+            child: new Text("Passa alla versione semplificata",textAlign:TextAlign.center,style: TextStyle(color:Colors.blueAccent,fontSize: 18.0,fontWeight: FontWeight.bold))
+        )
+    );
+  }
+  Widget waiting(){
+    return new Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children:[
+          CircularProgressIndicator(),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 20.0, bottom: 20.0),
+            child: new Text("Il caricamento può richiedere anche più di 20 secondi",textAlign:TextAlign.center,style: TextStyle(fontSize: 24.0,fontWeight: FontWeight.bold))
+          ),
+          Container(
+              width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 20.0, bottom: 20.0),
+              child: new Text("Consigliamo di passare alla connessione WiFi",textAlign:TextAlign.center,style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold))
+          ),
+          Container(
+              width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 20.0, bottom: 20.0),
+              child: new Text("OPPURE",textAlign:TextAlign.center,style: TextStyle(fontSize: 12.0,fontWeight: FontWeight.bold))
+          ),
+          GestureDetector(
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SemplificataPage()));
+            },
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 20.0, bottom: 0),
+              child: new Text("Passa alla versione semplificata",textAlign:TextAlign.center,style: TextStyle(color:Colors.blueAccent,fontSize: 18.0,fontWeight: FontWeight.bold))
+            )
+          ),
+        ]
       )
+    );
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    return new Container(
+      child: albero()
     );
   }
 }

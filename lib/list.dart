@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'rest_api.dart';
 import 'anime.dart';
 

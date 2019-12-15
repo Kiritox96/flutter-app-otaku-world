@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'rest_api.dart';
 import 'anime.dart';
 
@@ -33,9 +34,10 @@ class _ListAdvancedPageState extends State<ListAdvancedPage> {
       color: Colors.blueGrey
     );
   }
-
-
-
+  void putActivity(dynamic anime) async {
+    var box = await Hive.openBox('activities');
+    box.add(anime);
+  }
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -49,7 +51,6 @@ class _ListAdvancedPageState extends State<ListAdvancedPage> {
             if(snapshot.hasData){
               List all = snapshot.data[0];
               if(all.length > 0){
-
                 return new ListView.builder(
                   itemCount: all.length,
                   itemBuilder: (BuildContext context, int index) {

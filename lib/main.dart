@@ -8,6 +8,8 @@ import 'calendario.dart';
 import 'package:path_provider/path_provider.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // need to be the first line in main method
+
   Directory appDocDir = await getApplicationDocumentsDirectory();
   Hive.init(appDocDir.path);
   runApp(MyApp());
