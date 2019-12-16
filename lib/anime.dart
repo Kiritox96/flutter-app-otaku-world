@@ -146,71 +146,69 @@ class _AnimePageState extends State<AnimePage> {
         width: MediaQuery.of(context).size.width,
         margin: EdgeInsets.only(right: 5.0, left: 5.0, top: 5.0, bottom: 5.0),
         child: new SingleChildScrollView(
-        child: new ConstrainedBox(
-          constraints: new BoxConstraints(),
-            child: new  Column(
-              children:[
-                Container(
-                  height: 160,
-                  width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.only(right: 5.0, left: 5.0, top: 5.0, bottom: 5.0),
-                  decoration:dec(this.anime['image'])
-                ),
-                Container(
-                  height:30,
-                  width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.only(right: 5.0, left: 5.0, top: 5.0, bottom: 5.0),
-                  child: new Text("Le trame degli anime al momento non sono disponibili",textAlign:TextAlign.center,style: TextStyle(color:Colors.grey,fontSize: 15.0,fontWeight: FontWeight.bold))
-                ),
-                Container(
-                  height: 35,
-                  width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.only(right: 5.0, left: 5.0, top: 5.0, bottom: 5.0),
-                  child:chips()
-                ),
-                Divider(height: 2, color: Colors.black),
-                Container(
-                  height: MediaQuery.of(context).size.height - 500,
-                  width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-                    child:episodi()
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-                  child:Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    mainAxisSize: MainAxisSize.max,
-                    children:[
-                      new GestureDetector(
-                        onTap: () async {
-                          var box = await Hive.openBox('animes');
-                          var index = -1;
-                          index = box.values.toList().indexOf(this.anime);
-                          print(box.keys);
-                          if(index != -1){
-                            box.deleteAt(index);
-                            this.showToast("Anime tolto dai preferiti");
-                          }
-                          else{
-                            box.add(this.anime);
-                            this.showToast("Anime aggiunto dai preferiti");
-                          }
-                        },
-                        child: Container(child: new IconTheme(
-                          data: new IconThemeData(color: Colors.yellow),
-                          child: new Icon(Icons.star),
-                        ))
-                      ),
-                      Container(
-                        child: new Icon(Icons.share)
-                      ),
-                    ]
-                  )
-                )
-              ]
+        child: new  Column(
+          children:[
+            Container(
+              height: 160,
+              width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.only(right: 5.0, left: 5.0, top: 5.0, bottom: 5.0),
+              decoration:dec(this.anime['image'])
+            ),
+            Container(
+              height:30,
+              width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.only(right: 5.0, left: 5.0, top: 5.0, bottom: 5.0),
+              child: new Text("Le trame degli anime al momento non sono disponibili",textAlign:TextAlign.center,style: TextStyle(color:Colors.grey,fontSize: 15.0,fontWeight: FontWeight.bold))
+            ),
+            Container(
+              height: 35,
+              width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.only(right: 5.0, left: 5.0, top: 5.0, bottom: 5.0),
+              child:chips()
+            ),
+            Divider(height: 2, color: Colors.black),
+            Container(
+              height: MediaQuery.of(context).size.height - 300,
+              width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+                child:episodi()
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+              child:Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisSize: MainAxisSize.max,
+                children:[
+                  new GestureDetector(
+                    onTap: () async {
+                      var box = await Hive.openBox('animes');
+                      var index = -1;
+                      index = box.values.toList().indexOf(this.anime);
+                      print(box.keys);
+                      if(index != -1){
+                        box.deleteAt(index);
+                        this.showToast("Anime tolto dai preferiti");
+                      }
+                      else{
+                        box.add(this.anime);
+                        this.showToast("Anime aggiunto dai preferiti");
+                      }
+                    },
+                    child: Container(child: new IconTheme(
+                      data: new IconThemeData(color: Colors.yellow),
+                      child: new Icon(Icons.star),
+                    ))
+                  ),
+                  Container(
+                    child: new Icon(Icons.share)
+                  ),
+                ]
+              )
             )
-          )
+          ]
+        )
+
         )
       )
     );
