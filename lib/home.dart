@@ -5,6 +5,7 @@ import 'package:hello/login.dart';
 import 'package:hello/ricerca.dart';
 import 'package:hive/hive.dart';
 import 'anime.dart';
+import 'preferiti.dart';
 import 'rest_api.dart';
 import 'calendario.dart';
 import 'list.dart';
@@ -310,12 +311,16 @@ class _MainPageState extends State<MainPage> {
                 ],
               )
             ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-              child: new Text("Visualizza tutti i preferiti",textAlign:TextAlign.right,style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold))
-            ),
-
+            GestureDetector(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PreferitiPage()));
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+                child: new Text("Visualizza tutti i preferiti",textAlign:TextAlign.right,style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold))
+              ),
+            )
           ]
         )
       );
