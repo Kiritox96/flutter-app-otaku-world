@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'decoration.dart';
 import 'rest_api.dart';
 import 'package:page_indicator/page_indicator.dart';
 
@@ -9,23 +10,7 @@ class CalendarioPage extends StatefulWidget {
 
 class _CalendarioPageState extends State<CalendarioPage> {
   final PageController controller = new PageController();
-  BoxDecoration dec(String img) {
-    return new BoxDecoration(
-      image: new DecorationImage(
-        image: new NetworkImage(img),
-        fit: BoxFit.cover,
-      ),
-      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-      boxShadow: [
-        new BoxShadow(
-          color: Colors.black45,
-          offset: new Offset(5.0, 4.0),
-          blurRadius: 2.0,
-        )
-      ],
-      color: Colors.blueGrey
-    );
-  }
+  
   Widget grid(List list){
     return new GridView.builder(
       itemCount: list.length,
@@ -34,7 +19,7 @@ class _CalendarioPageState extends State<CalendarioPage> {
         return Container(
           width: MediaQuery.of(context).size.width/2,
           margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 0, bottom: 10.0),
-          decoration: dec(list[index]['image']),
+          decoration: DecorationService.dec(list[index]['image']),
 
         );
       },

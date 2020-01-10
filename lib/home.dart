@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hello/activity.dart';
-import 'package:hello/login.dart';
 import 'package:hello/ricerca.dart';
+import 'package:hello/util.dart';
 import 'package:hive/hive.dart';
+import 'package:admob_flutter/admob_flutter.dart';
 import 'anime.dart';
+import 'decoration.dart';
 import 'preferiti.dart';
 import 'rest_api.dart';
 import 'calendario.dart';
@@ -13,7 +16,7 @@ import 'ricerca.dart';
 import 'SemplificataPage.dart';
 import 'package:image_ink_well/image_ink_well.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'login.dart';
+import 'ads.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:connection_status_bar/connection_status_bar.dart';
 class HomePage extends StatefulWidget {
@@ -68,93 +71,13 @@ class MainPage extends StatefulWidget {
 
 
 class _MainPageState extends State<MainPage> {
-  BoxDecoration dec(String img) {
-    return new BoxDecoration(
-      image: new DecorationImage(
-        image: new NetworkImage(img),
-        fit: BoxFit.cover,
-      ),
-      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-      boxShadow: [
-        new BoxShadow(
-          color: Colors.black45,
-          offset: new Offset(5.0, 4.0),
-          blurRadius: 2.0,
-        )
-      ],
-      color: Colors.blueGrey
-    );
-  }
-  BoxDecoration decFlip() {
-    return new BoxDecoration(
-      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-      boxShadow: [
-        new BoxShadow(
-          color: Colors.black45,
-          offset: new Offset(5.0, 4.0),
-          blurRadius: 2.0,
-        )
-      ],
-      color: Colors.blueAccent
-    );
-  }
-  BoxDecoration decFlipGrey() {
-    return new BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-        boxShadow: [
-          new BoxShadow(
-            color: Colors.black45,
-            offset: new Offset(5.0, 4.0),
-            blurRadius: 2.0,
-          )
-        ],
-        color: Colors.blueGrey
-    );
-  }
-
+  AdmobInterstitial interstitialAd;
+  
   Widget evidenza(List cans) {
-    return new CarouselSlider(
-      height: 175.0,
-      items: cans.map((i) {
-        return Builder(
-          builder: (BuildContext context) {
-            return  GestureDetector(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(i)));
-              },
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 0, bottom: 10.0),
-                decoration: dec(i['image']),
-
-              )
-            );
-          },
-        );
-      }).toList(),
-    );
+    UtilService.carousel(cans);
   }
   Widget suggeriti(List done) {
-    return new CarouselSlider(
-      height: 175.0,
-      items: done.map((i) {
-        return Builder(
-          builder: (BuildContext context) {
-            return  GestureDetector(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(i)));
-              },
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 0, bottom: 10.0),
-                decoration: dec(i['image']),
-
-              )
-            );
-          },
-        );
-      }).toList(),
-    );
+    UtilService.carousel(done);
   }
   Container testo(String txt){
     return new Container(
@@ -185,7 +108,7 @@ class _MainPageState extends State<MainPage> {
                     },
                     child :Container(
                       margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-                      decoration: dec(today[0]['image']),
+                      decoration: DecorationService.dec(today[0]['image']),
                       width: (x/2)-20,
                       height: 150,
                     )
@@ -196,7 +119,7 @@ class _MainPageState extends State<MainPage> {
                     },
                     child :Container(
                       margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-                      decoration: dec(today[1]['image']),
+                      decoration: DecorationService.dec(today[1]['image']),
                       width: (x/2)-20,
                       height: 150,
                     )
@@ -213,7 +136,7 @@ class _MainPageState extends State<MainPage> {
                     },
                     child :Container(
                       margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-                      decoration: dec(today[2]['image']),
+                      decoration: DecorationService.dec(today[2]['image']),
                       width: (x/2)-20,
                       height: 150,
                     )
@@ -224,7 +147,7 @@ class _MainPageState extends State<MainPage> {
                     },
                     child :Container(
                       margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-                      decoration: dec(today[3]['image']),
+                      decoration: DecorationService.dec(today[3]['image']),
                       width: (x/2)-20,
                       height: 150,
                     )
@@ -284,30 +207,9 @@ class _MainPageState extends State<MainPage> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  CircleImageInkWell(
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(preferiti[0])));
-                    },
-                    size: MediaQuery.of(context).size.width/4,
-                    image: NetworkImage(preferiti[0]['image']),
-                    splashColor: Colors.white24,
-                  ),
-                  CircleImageInkWell(
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(preferiti[1])));
-                    },
-                    size:  MediaQuery.of(context).size.width/4,
-                    image: NetworkImage(preferiti[1]['image']),
-                    splashColor: Colors.white24,
-                  ),
-                  CircleImageInkWell(
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(preferiti[2])));
-                    },
-                    size:  MediaQuery.of(context).size.width/4,
-                    image: NetworkImage(preferiti[2]['image']),
-                    splashColor: Colors.white24,
-                  )
+                  UtilService.circleImage(context, preferiti[0]),
+                  UtilService.circleImage(context, preferiti[1]),
+                  UtilService.circleImage(context, preferiti[2])
                 ],
               )
             ),
@@ -327,7 +229,7 @@ class _MainPageState extends State<MainPage> {
     }
     else{
       return new Container(
-        decoration: decFlipGrey(),
+        decoration: DecorationService.decFlipGrey(),
         height:50,
         width: MediaQuery.of(context).size.width,
         margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
@@ -338,20 +240,7 @@ class _MainPageState extends State<MainPage> {
     }
 
   }
-  Container logo(){
-    return new Container(
-        margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 0, bottom: 0),
-        width: MediaQuery.of(context).size.width,
-        color: Color(0x060606),
-        height: 210,
-        child:Column(
-          children:[
-            Image.asset("logo.png"),
-            Divider(height: 2, color: Colors.black)
-          ]
-        )
-    );
-  }
+  
   Widget elenco(){
     return new GestureDetector(
       onTap: (){
@@ -359,7 +248,7 @@ class _MainPageState extends State<MainPage> {
       },
       child: new Container(
         height:50,
-        decoration: decFlip(),
+        decoration: DecorationService.decFlip(),
         width: MediaQuery.of(context).size.width,
         margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
         child: Row(
@@ -371,38 +260,8 @@ class _MainPageState extends State<MainPage> {
               child: new Text("Elenco anime",style: TextStyle(color:Colors.white,fontSize: 25.0,fontWeight: FontWeight.bold))
             ),
             Container(
-
               margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
               child: new Icon(Icons.arrow_forward_ios)
-            )
-          ]
-        )
-      )
-    );
-
-  }
-
-  Widget login(){
-    return new GestureDetector(
-      onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
-      },
-      child: new Container(
-        height:50,
-        decoration: decFlip(),
-        width: MediaQuery.of(context).size.width,
-        margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.max,
-          children:[
-            Container(
-                margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-                child: new Text("Effettua il login",style: TextStyle(color:Colors.white,fontSize: 25.0,fontWeight: FontWeight.bold))
-            ),
-            Container(
-                margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-                child: new Icon(Icons.arrow_forward_ios)
             )
           ]
         )
@@ -433,14 +292,14 @@ class _MainPageState extends State<MainPage> {
             List sug = snapshot.data[1];
             var today = snapshot.data[2];
             List pref = snapshot.data[3];
-
+            
             return new SingleChildScrollView(
               child: new ConstrainedBox(
                 constraints: new BoxConstraints(),
                 child: new Column(
                   children: [
                     ConnectionStatusBar(),
-                    logo(),
+                    UtilService.logo(context),
                     preferiti(pref),
                     elenco(),
                     avanzata(),
@@ -449,7 +308,7 @@ class _MainPageState extends State<MainPage> {
                     testo("Suggeriti"),
                     suggeriti(sug),
                     activity(),
-                    login(),
+                    AdsService.showBanner(),
                     testo("Usciti oggi"),
                     grid(today['giorno']),
                     semplificata()
@@ -462,6 +321,9 @@ class _MainPageState extends State<MainPage> {
         }
     );
   }
+  
+ 
+  
   Widget semplificata(){
     return new GestureDetector(
         onTap: (){

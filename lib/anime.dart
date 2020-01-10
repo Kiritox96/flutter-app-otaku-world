@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
+import 'package:hello/util.dart';
 import 'package:hello/video.dart';
 import 'package:hive/hive.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -11,17 +12,7 @@ class AnimePage extends StatefulWidget {
 }
 
 class _AnimePageState extends State<AnimePage> {
-  void showToast(String txt) {
-    Fluttertoast.showToast(
-      msg: txt,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIos: 1,
-      backgroundColor: Colors.black,
-      textColor: Colors.white
-    );
-
-  }
+  
   _AnimePageState(this.anime);
   final dynamic anime;
 
@@ -188,11 +179,11 @@ class _AnimePageState extends State<AnimePage> {
                       print(box.keys);
                       if(index != -1){
                         box.deleteAt(index);
-                        this.showToast("Anime tolto dai preferiti");
+                        UtilService.showToast("Anime tolto dai preferiti");
                       }
                       else{
                         box.add(this.anime);
-                        this.showToast("Anime aggiunto dai preferiti");
+                        UtilService.showToast("Anime aggiunto dai preferiti");
                       }
                     },
                     child: Container(child: new IconTheme(

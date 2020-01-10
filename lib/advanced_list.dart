@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'decoration.dart';
 import 'rest_api.dart';
 import 'anime.dart';
 
@@ -17,23 +18,7 @@ class _ListAdvancedPageState extends State<ListAdvancedPage> {
   _ListAdvancedPageState(this.url);
   final String url;
 
-  BoxDecoration dec(String img) {
-    return new BoxDecoration(
-      image: new DecorationImage(
-        image: new NetworkImage(img),
-        fit: BoxFit.cover,
-      ),
-      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-      boxShadow: [
-        new BoxShadow(
-          color: Colors.black45,
-          offset: new Offset(5.0, 4.0),
-          blurRadius: 2.0,
-        )
-      ],
-      color: Colors.blueGrey
-    );
-  }
+  
   void putActivity(dynamic anime) async {
     var box = await Hive.openBox('activities');
     box.add(anime);
@@ -62,7 +47,7 @@ class _ListAdvancedPageState extends State<ListAdvancedPage> {
                         height: 175,
                         width: MediaQuery.of(context).size.width,
                         margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-                        decoration: dec(all[index]['image']),
+                        decoration: DecorationService.dec(all[index]['image']),
 
                       ),
                     );

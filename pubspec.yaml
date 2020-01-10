@@ -38,6 +38,8 @@ dependencies:
   animated_splash: ^1.0.0
   webview_flutter: ^0.3.14+1
   sliding_up_panel: ^0.3.3
+  admob_flutter: "^0.3.4"
+  
 dev_dependencies:
 
   flutter_test:

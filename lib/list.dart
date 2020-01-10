@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'decoration.dart';
 import 'rest_api.dart';
 import 'anime.dart';
 
@@ -12,20 +13,7 @@ class ListPage extends StatefulWidget {
 }
 
 class _ListPageState extends State<ListPage> {
-  BoxDecoration dec() {
-    return new BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-        boxShadow: [
-          new BoxShadow(
-            color: Colors.black45,
-            offset: new Offset(5.0, 4.0),
-            blurRadius: 2.0,
-          )
-        ],
-        color: Colors.white
-    );
-  }
-
+  
   static final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   TextEditingController _searchQuery;
   bool _isSearching = false;
@@ -110,7 +98,7 @@ class _ListPageState extends State<ListPage> {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(all[index])));
                   },
                   child: Container(
-                    decoration:dec(),
+                    decoration:DecorationService.decWhite(),
                     margin:EdgeInsets.all(10.0),
                     width:MediaQuery.of(context).size.width,
                     height:100,
@@ -172,7 +160,7 @@ class _ListPageState extends State<ListPage> {
                   itemBuilder: (BuildContext context, int index) {
 
                     return new Container(
-                      decoration:dec(),
+                      decoration:DecorationService.decWhite(),
                       margin:EdgeInsets.all(10.0),
                       width:MediaQuery.of(context).size.width,
                       height:100,
