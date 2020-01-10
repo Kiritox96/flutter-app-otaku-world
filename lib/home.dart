@@ -1,11 +1,11 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hello/activity.dart';
 import 'package:hello/ricerca.dart';
 import 'package:hello/util.dart';
 import 'package:hive/hive.dart';
-import 'package:admob_flutter/admob_flutter.dart';
+import 'package:image_ink_well/image_ink_well.dart';
 import 'anime.dart';
 import 'decoration.dart';
 import 'preferiti.dart';
@@ -14,10 +14,7 @@ import 'calendario.dart';
 import 'list.dart';
 import 'ricerca.dart';
 import 'SemplificataPage.dart';
-import 'package:image_ink_well/image_ink_well.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'ads.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:connection_status_bar/connection_status_bar.dart';
 class HomePage extends StatefulWidget {
   @override
@@ -71,13 +68,50 @@ class MainPage extends StatefulWidget {
 
 
 class _MainPageState extends State<MainPage> {
-  AdmobInterstitial interstitialAd;
   
   Widget evidenza(List cans) {
-    UtilService.carousel(cans);
+    return new CarouselSlider(
+      height: 175.0,
+      items: cans.map((i)  {
+        return Builder(
+          builder: (BuildContext context) {
+            return  GestureDetector(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(i)));
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 0, bottom: 10.0),
+                decoration: DecorationService.dec(i['image']),
+
+              )
+            );
+          },
+        );
+      }).toList(),
+    );
   }
   Widget suggeriti(List done) {
-    UtilService.carousel(done);
+    return new CarouselSlider(
+      height: 175.0,
+      items: done.map((i)  {
+        return Builder(
+          builder: (BuildContext context) {
+            return  GestureDetector(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(i)));
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 0, bottom: 10.0),
+                decoration: DecorationService.dec(i['image']),
+
+              )
+            );
+          },
+        );
+      }).toList(),
+    );
   }
   Container testo(String txt){
     return new Container(
@@ -207,10 +241,31 @@ class _MainPageState extends State<MainPage> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  UtilService.circleImage(context, preferiti[0]),
-                  UtilService.circleImage(context, preferiti[1]),
-                  UtilService.circleImage(context, preferiti[2])
-                ],
+                  CircleImageInkWell(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(preferiti[0])));
+                    },
+                    size: MediaQuery.of(context).size.width/4,
+                    image: NetworkImage(preferiti[0]['image']),
+                    splashColor: Colors.white24,
+                  ),
+                   CircleImageInkWell(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(preferiti[1])));
+                    },
+                    size: MediaQuery.of(context).size.width/4,
+                    image: NetworkImage(preferiti[1]['image']),
+                    splashColor: Colors.white24,
+                  ),
+                   CircleImageInkWell(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(preferiti[2])));
+                    },
+                    size: MediaQuery.of(context).size.width/4,
+                    image: NetworkImage(preferiti[2]['image']),
+                    splashColor: Colors.white24,
+                  ) 
+                ]
               )
             ),
             GestureDetector(
@@ -299,7 +354,18 @@ class _MainPageState extends State<MainPage> {
                 child: new Column(
                   children: [
                     ConnectionStatusBar(),
-                    UtilService.logo(context),
+                    Container(
+                      margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 0, bottom: 0),
+                      width: MediaQuery.of(context).size.width,
+                      color: Color(0x060606),
+                      height: 210,
+                      child:Column(
+                        children:[
+                          Image.asset("logo.png"),
+                          Divider(height: 2, color: Colors.black)
+                        ]
+                      )
+                    ),
                     preferiti(pref),
                     elenco(),
                     avanzata(),
@@ -308,9 +374,8 @@ class _MainPageState extends State<MainPage> {
                     testo("Suggeriti"),
                     suggeriti(sug),
                     activity(),
-                    AdsService.showBanner(),
-                    testo("Usciti oggi"),
-                    grid(today['giorno']),
+                    //testo("Usciti oggi"),
+                    //grid(today['giorno']),
                     semplificata()
                   ]
                 )
