@@ -1,9 +1,12 @@
+import 'package:connection_status_bar/connection_status_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
 import 'package:hello/util.dart';
 import 'package:hello/video.dart';
 import 'package:hive/hive.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
+import 'decoration.dart';
+import 'rest_api.dart';
 class AnimePage extends StatefulWidget {
   final dynamic anime;
   AnimePage(dynamic anime): this.anime = anime;
@@ -13,74 +16,91 @@ class AnimePage extends StatefulWidget {
 
 class _AnimePageState extends State<AnimePage> {
   
+       
+
   _AnimePageState(this.anime);
   final dynamic anime;
+  
+  Widget detail(dynamic an){
+    return new Container(
+      width: MediaQuery.of(context).size.width / 3,
+      margin: EdgeInsets.all(10.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            height: 200,
+            width: MediaQuery.of(context).size.width / 2.5,
+            decoration: DecorationService.dec(an['image'])
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.all(10.0),
+                child: Text(an['episodi'].length.toString() + " episodi",textAlign:TextAlign.left,style: TextStyle(fontSize: 15.0,fontWeight: FontWeight.bold)),
+              ),
+              Container(
+                width:150,
+                margin: EdgeInsets.all(10.0),
+                child:  Text(an['generi'].join(' , '),textAlign:TextAlign.center,style: TextStyle(fontSize: 15.0,fontWeight: FontWeight.bold)) ,
+              ),
+              
+            ],
+          )
+        ],
+      ),
+    );
+  }
 
-  BoxDecoration dec(String img) {
-    return new BoxDecoration(
-        image: new DecorationImage(
-          image: new NetworkImage(img),
-          fit: BoxFit.cover,
-        ),
-        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-        boxShadow: [
-          new BoxShadow(
-            color: Colors.black45,
-            offset: new Offset(5.0, 4.0),
-            blurRadius: 2.0,
-          )
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text(this.anime['name'])
+      ),
+      body: new Container(
+        child: animeDetail(this.anime)
+      )
+    );
+  }
+  Widget animeDetail(dynamic an){
+    return new SingleChildScrollView(
+      child: new Column(
+        children: [
+          ConnectionStatusBar(),
+          all(an)
+        ]
+      )
+    );
+  }
+  Widget all(an){
+    return new Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          detail(an),
+         
         ],
-        color: Colors.blueGrey
+      )
     );
   }
-  Widget chips(){
-    return new ListView.builder(
-      itemCount: this.anime['genere'].length,
-      scrollDirection: Axis.horizontal,
-      itemBuilder: (context, index) {
-        return Container(
-          width: 120,
-          height: 35,
-          margin: EdgeInsets.only(right: 5.0, left: 5.0, top: 5.0, bottom: 5.0),
-          child: Badge(
-            elevation:8.0,
-            badgeColor: Colors.blueAccent,
-            shape: BadgeShape.square,
-            borderRadius: 8,
-            toAnimate: false,
-            badgeContent: Text(this.anime['genere'][index], style: TextStyle(color: Colors.white)),
-          )
-        );
-      },
-    );
-  }
-  BoxDecoration decFlip() {
-    return new BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-        boxShadow: [
-          new BoxShadow(
-            color: Colors.black45,
-            offset: new Offset(5.0, 4.0),
-            blurRadius: 2.0,
-          )
-        ],
-        color: Colors.blueAccent
-    );
-  }
-  Widget episodi(){
+}
+ 
+  /*Widget episodi(){
     if(this.anime['episodi'].length > 0){
       return new ListView.builder(
         itemCount: this.anime['episodi'].length,
         itemBuilder: (context, index) {
           return new GestureDetector(
             onTap: (){
-              /*
+              
               var activity = {
                 "anime" : this.anime,
                 "episodio" : this.anime['episodi'][index]
               };
               this.putActivity(activity);
-               */
+               
               var video = {
                 "anime" : this.anime,
                 "episodio" : this.anime['episodi'][index],
@@ -124,90 +144,4 @@ class _AnimePageState extends State<AnimePage> {
   void putActivity(dynamic activity) async {
     var box = await Hive.openBox('activities');
     box.add(activity);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(this.anime['name'])
-      ),
-      body: new Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        margin: EdgeInsets.only(right: 5.0, left: 5.0, top: 5.0, bottom: 5.0),
-        child: new SingleChildScrollView(
-        child: new  Column(
-          children:[
-            Container(
-              height: 160,
-              width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.only(right: 5.0, left: 5.0, top: 5.0, bottom: 5.0),
-              decoration:dec(this.anime['image'])
-            ),
-            Container(
-              height:30,
-              width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.only(right: 5.0, left: 5.0, top: 5.0, bottom: 5.0),
-              child: new Text("Le trame degli anime al momento non sono disponibili",textAlign:TextAlign.center,style: TextStyle(color:Colors.grey,fontSize: 15.0,fontWeight: FontWeight.bold))
-            ),
-            Container(
-              height: 35,
-              width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.only(right: 5.0, left: 5.0, top: 5.0, bottom: 5.0),
-              child:chips()
-            ),
-            Divider(height: 2, color: Colors.black),
-            Container(
-              height: MediaQuery.of(context).size.height - 300,
-              width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-                child:episodi()
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-              child:Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                mainAxisSize: MainAxisSize.max,
-                children:[
-                  new GestureDetector(
-                    onTap: () async {
-                      var box = await Hive.openBox('animes');
-                      var index = -1;
-                      index = box.values.toList().indexOf(this.anime);
-                      print(box.keys);
-                      if(index != -1){
-                        box.deleteAt(index);
-                        UtilService.showToast("Anime tolto dai preferiti");
-                      }
-                      else{
-                        box.add(this.anime);
-                        UtilService.showToast("Anime aggiunto dai preferiti");
-                      }
-                    },
-                    child: Container(child: new IconTheme(
-                      data: new IconThemeData(color: Colors.yellow),
-                      child: new Icon(Icons.star),
-                    ))
-                  ),
-                  Container(
-                    child: new Icon(Icons.share)
-                  ),
-                ]
-              )
-            )
-          ]
-        )
-
-        )
-      )
-    );
-  }
-
-  @override
-  void dispose() {
-    Hive.close();
-    super.dispose();
-  }
-}
+  }*/

@@ -38,6 +38,25 @@ class ApiService {
     }
 
   }
+  static Future<dynamic> getAnimeFromName(String name) async {
+
+
+
+    final response = await http.get('${URLS.BASE_URL}/world/world?name=' + name);
+
+    if (response.statusCode == 200) {
+
+      var jsonObj = json.decode(response.body);
+
+      return jsonObj;
+
+    } else {
+
+      return null;
+
+    }
+
+  }
 
  static Future<List> searchAnimes(String str) async {
 
@@ -63,7 +82,7 @@ class ApiService {
 
   static Future<List> getAnimeEvidenza() async {
 
-    final response = await http.get('${URLS.BASE_URL}/anime/anime?type=evidenza');
+    final response = await http.get('${URLS.BASE_URL}/world/world?type=evidenza');
 
 
 
@@ -83,7 +102,7 @@ class ApiService {
 
  static Future<List> getAnimeSuggeriti() async {
 
-   final response = await http.get('${URLS.BASE_URL}/anime/anime?type=suggeriti');
+   final response = await http.get('${URLS.BASE_URL}/world/world?type=suggeriti');
 
 
 
@@ -134,7 +153,6 @@ class ApiService {
      return jsonObj;
 
    } else {
-
      return null;
 
    }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:unity_ads_flutter/unity_ads_flutter.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 class VideoPage extends StatefulWidget {
   final dynamic video;
@@ -10,12 +11,23 @@ class VideoPage extends StatefulWidget {
   _VideoPageState createState() => new _VideoPageState(video);
 }
 
-class _VideoPageState extends State<VideoPage> {
+class _VideoPageState extends State<VideoPage> with UnityAdsListener{
 
   _VideoPageState(this.video);
   final dynamic video;
   final Completer<WebViewController> _controller = Completer<WebViewController>();
 
+  String videoPlacementId='video';
+  int _ready = 0;
+  
+  String gameIdAndroid='3427627';
+  String gameIdIOS='3427626';
+  @override
+  initState() {
+    UnityAdsFlutter.initialize(gameIdAndroid, gameIdIOS, this, true);
+    _ready =0;
+    super.initState();
+  }
   Widget landscape(){
     return Container(
       margin: EdgeInsets.only(right: 50.0, left: 50.0, top: 0, bottom: 0),
@@ -29,6 +41,7 @@ class _VideoPageState extends State<VideoPage> {
     );
 
   }
+  
   Widget _floatingPanel(){
     return Container(
       decoration: BoxDecoration(
@@ -45,7 +58,25 @@ class _VideoPageState extends State<VideoPage> {
       child: RotatedBox(
         quarterTurns: 3,
         child: Center(
-          child: Text("This is the SlidingUpPanel when open"),
+          child: Column(
+            children:[
+              Container(
+                width: 200.0,
+                margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 20.0, bottom: 0),
+                child: new Text("SUB ITA",textAlign:TextAlign.center,style: TextStyle(color:Colors.blueAccent,fontSize: 18.0,fontWeight: FontWeight.bold))
+              ),
+              Container(
+                width: 200.0,
+                margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 20.0, bottom: 0),
+                child: new Text("ITA",textAlign:TextAlign.center,style: TextStyle(color:Colors.blueAccent,fontSize: 18.0,fontWeight: FontWeight.bold))
+              ),
+              Container(
+                width: 200.0,
+                margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 20.0, bottom: 0),
+                child: new Text("DOWNLOAD",textAlign:TextAlign.center,style: TextStyle(color:Colors.blueAccent,fontSize: 18.0,fontWeight: FontWeight.bold))
+              )
+            ]
+          )
         ),
       )
     );
@@ -68,6 +99,9 @@ class _VideoPageState extends State<VideoPage> {
   );
   @override
   Widget build(BuildContext context) {
+    if(this._ready == 0){
+      UnityAdsFlutter.show('video');
+    }
     return new Scaffold(
       body: SlidingUpPanel(
         renderPanelSheet: false,
@@ -87,6 +121,36 @@ class _VideoPageState extends State<VideoPage> {
       ),
 
     );
+  }
+  @override
+  void onUnityAdsError(UnityAdsError error, String message) {
+    print('$error occurred: $message');
+    
+  }
+
+  @override
+  void onUnityAdsFinish(String placementId, FinishState result) {
+    print('Finished $placementId with $result');
+  }
+
+  @override
+  void onUnityAdsReady(String placementId) {
+    print('Ready: $placementId');
+    /*if (placementId == videoPlacementId){
+      setState(() {
+        _ready++;
+      });
+    }*/
+  }
+
+  @override
+  void onUnityAdsStart(String placementId) {
+    print('Start: $placementId');
+    if(placementId == videoPlacementId){
+      setState(() {
+        _ready++;
+      });
+    }
   }
 }
 
