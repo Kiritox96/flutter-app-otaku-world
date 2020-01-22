@@ -1,7 +1,5 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'decoration.dart';
 import 'rest_api.dart';
 import 'anime.dart';
@@ -89,56 +87,23 @@ class _ListPageState extends State<ListPage> {
         builder: (context, AsyncSnapshot<List> snapshot) {
           if (snapshot.hasData) {
             List all = snapshot.data[0];
-
-            return new ListView.builder(
-              itemCount: all.length,
-              itemBuilder: (BuildContext context, int index) {
-                return new GestureDetector(
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(all[index])));
-                  },
-                  child: Container(
-                    decoration:DecorationService.decWhite(),
-                    margin:EdgeInsets.all(10.0),
-                    width:MediaQuery.of(context).size.width,
-                    height:100,
-                    child: new Center(
-                        child: new Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children:[
-                              new Container(
-                                  decoration:new BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15.0))),
-                                  height:100,
-                                  width:100,
-                                  child: new Image.network(all[index]['image'],width:100,height:100)
-                              ),
-                              new Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  new Container(
-                                      margin:EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 0),
-                                      height:30,
-                                      width:MediaQuery.of(context).size.width-150,
-                                      child: new Text(all[index]['name'], textAlign:TextAlign.left,style: new TextStyle(fontSize: 14.0, color: Colors.lightBlueAccent,fontWeight: FontWeight.bold))
-                                  ),
-                                  new Container(
-                                      margin:EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 0),
-                                      height:30,
-                                      width:MediaQuery.of(context).size.width-150,
-                                      child: new Text("Episodi " + all[index]['episodi'].length.toString(), textAlign:TextAlign.left,style: new TextStyle(fontSize: 12.0, color: Colors.amber))
-                                  )
-                                ],
-                              )
-                            ]
-                        )
-                    ),
-                    padding: const EdgeInsets.all(5.0),
-                  ),
+            return new GridView.count(
+              crossAxisCount: 3,
+              children: List.generate(all.length, (index) {
+                return Center(
+                  child:GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(all[index])));
+                    },
+                    child: new Container(
+                      decoration: DecorationService.dec(all[index]['image']),
+                      width: MediaQuery.of(context).size.width / 4,
+                      margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+                      
+                    )
+                  )
                 );
-
-              },
+              })
             );
           }
           return Center(
@@ -149,68 +114,41 @@ class _ListPageState extends State<ListPage> {
     }
     else if(this._isSearching == true && this.searchQuery != '' ){
       return new FutureBuilder(
-          future: Future.wait([ApiService.searchAnimes(this.searchQuery)]),
-          builder: (context, AsyncSnapshot<List> snapshot) {
-            if (snapshot.hasData) {
-              List all = snapshot.data[0];
-              print(snapshot.error);
-              if(all.length > 0){
-                return new ListView.builder(
-                  itemCount: all.length,
-                  itemBuilder: (BuildContext context, int index) {
-
-                    return new Container(
-                      decoration:DecorationService.decWhite(),
-                      margin:EdgeInsets.all(10.0),
-                      width:MediaQuery.of(context).size.width,
-                      height:100,
-                      child: new Center(
-                          child: new Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children:[
-                                new Container(
-                                    decoration:new BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15.0))),
-                                    height:100,
-                                    width:100,
-                                    child: new Image.network(all[index]['image'],width:100,height:100)
-                                ),
-                                new Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    new Container(
-                                        margin:EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 0),
-                                        height:30,
-                                        width:MediaQuery.of(context).size.width-150,
-                                        child: new Text(all[index]['name'], textAlign:TextAlign.left,style: new TextStyle(fontSize: 14.0, color: Colors.lightBlueAccent,fontWeight: FontWeight.bold))
-                                    ),
-                                    new Container(
-                                        margin:EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 0),
-                                        height:30,
-                                        width:MediaQuery.of(context).size.width-150,
-                                        child: new Text("Episodi " + all[index]['episodi'].length.toString(), textAlign:TextAlign.left,style: new TextStyle(fontSize: 12.0, color: Colors.amber))
-                                    )
-                                  ],
-                                )
-                              ]
-                          )
-                      ),
-                      padding: const EdgeInsets.all(5.0),
-                    );
-                  },
-                );
-              }
-              else{
-                return Center(
-                  child: new Text("Non sono stati trovati risultati",textAlign:TextAlign.center,style: TextStyle(fontSize: 24.0,fontWeight: FontWeight.bold)),
-                );
-              }
+        future: Future.wait([ApiService.searchAnimes(this.searchQuery)]),
+        builder: (context, AsyncSnapshot<List> snapshot) {
+          if (snapshot.hasData) {
+            List all = snapshot.data[0];
+            print(snapshot.error);
+            if(all.length > 0){
+              return new GridView.count(
+                crossAxisCount: 3,
+                children: List.generate(all.length, (index) {
+                  return Center(
+                    child:GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(all[index])));
+                      },
+                      child: new Container(
+                        decoration: DecorationService.dec(all[index]['image']),
+                        width: MediaQuery.of(context).size.width / 4,
+                        margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+                        
+                      )
+                    )
+                  );
+                })
+              );
             }
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            else{
+              return Center(
+                child: new Text("Non sono stati trovati risultati",textAlign:TextAlign.center,style: TextStyle(fontSize: 24.0,fontWeight: FontWeight.bold)),
+              );
+            }
           }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
       );
     }
   }

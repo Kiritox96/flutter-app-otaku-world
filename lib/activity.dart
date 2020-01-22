@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hello/decoration.dart';
 import 'package:hive/hive.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'anime.dart';
 
 class ActivityPage extends StatefulWidget {
 
@@ -34,7 +34,7 @@ class _ActivityPageState extends State<ActivityPage> {
                     itemCount: all.length,
                     itemBuilder: (BuildContext context, int index) {
                       return new  Container(
-                        height: 175,
+                        decoration: DecorationService.decWhite(),
                         width: MediaQuery.of(context).size.width,
                         margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
                         child: Slidable(
@@ -43,25 +43,11 @@ class _ActivityPageState extends State<ActivityPage> {
                           child: Container(
                             color: Colors.white,
                             child: ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: Colors.indigoAccent,
-                                child: Text('3'),
-                                foregroundColor: Colors.white,
-                              ),
-                              title: Text(all[index]['anime']['name']),
-                              subtitle: Text("Visto episodio N°" + all[index]['episodio']),
+                             
+                              title: Text(all[index]['anime']),
+                              subtitle: Text("Visto episodio N° " + (int.parse(all[index]['episodio']) + 1).toString() ),
                             ),
                           ),
-                          secondaryActions: <Widget>[
-                            IconSlideAction(
-                              caption: 'Vai',
-                              color: Colors.black45,
-                              icon: Icons.input,
-                              onTap: () => {
-                                print("episodio")
-                              },
-                            )
-                          ]
                         )
                       );
                     },

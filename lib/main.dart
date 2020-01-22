@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'splash.dart';
 import 'home.dart';
-import 'calendario.dart';
 import 'package:path_provider/path_provider.dart';
 
 void main() async {
@@ -32,7 +31,6 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         //Ogni route ha un proprio widget
         '/HomePage': (BuildContext context) => new HomePage(),
-        '/CalendarioPage': (BuildContext context) => new CalendarioPage(),
 
       },
     );

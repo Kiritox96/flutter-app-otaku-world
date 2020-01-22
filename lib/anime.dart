@@ -1,13 +1,10 @@
 import 'package:connection_status_bar/connection_status_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:badges/badges.dart';
-import 'package:hello/util.dart';
 import 'package:hello/video.dart';
 import 'package:hive/hive.dart';
 import 'package:unity_ads_flutter/unity_ads_flutter.dart';
 
 import 'decoration.dart';
-import 'rest_api.dart';
 class AnimePage extends StatefulWidget {
   final dynamic anime;
   AnimePage(dynamic anime): this.anime = anime;
@@ -21,6 +18,12 @@ class _AnimePageState extends State<AnimePage> with UnityAdsListener{
   bool _ready;
   _AnimePageState(this.anime);
   final dynamic anime;
+  String videoPlacementId='video';
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  String gameIdAndroid='3427627';
+  String gameIdIOS='3427626';
+  String link = "";
+  
   Widget detail(dynamic an){
     return new Container(
 
@@ -71,11 +74,14 @@ class _AnimePageState extends State<AnimePage> with UnityAdsListener{
       child:Text(txt,textAlign:TextAlign.left,style: TextStyle(fontSize: 25.0,fontWeight: FontWeight.bold))
     );
   }
-  
-  String videoPlacementId='video';
-  
-  String gameIdAndroid='3427627';
-  String gameIdIOS='3427626';
+  void putActivity(dynamic activity) async {
+    var box = await Hive.openBox('activities');
+    box.add(activity);
+  }
+  Future<List<dynamic>> getActivity() async {
+    var box = await Hive.openBox('activities');
+    return box.values.toList();
+  }
   @override
   initState() {
     UnityAdsFlutter.initialize(gameIdAndroid, gameIdIOS, this, true);
@@ -94,6 +100,8 @@ class _AnimePageState extends State<AnimePage> with UnityAdsListener{
   @override
   void onUnityAdsFinish(String placementId, FinishState result) {
     print('Finished $placementId with $result');
+    Navigator.push(context, MaterialPageRoute(builder: (context) => VideoPage(this.link)));
+
   }
 
   @override
@@ -115,7 +123,7 @@ class _AnimePageState extends State<AnimePage> with UnityAdsListener{
       });
     }
   }
-  Widget episodi(dynamic an){
+  Widget episodi(){
     return new Container(
       margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
       child:Column(
@@ -126,93 +134,100 @@ class _AnimePageState extends State<AnimePage> with UnityAdsListener{
           Container(
             width: MediaQuery.of(context).size.width ,
             height: 300,
-            child: gridView(an),
+            child: gridView(this.anime),
           ),
-          Container(
-            margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-            width: MediaQuery.of(context).size.width,
-            child:Text("Aggiungi ai preferiti",textAlign:TextAlign.right,style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold,color: Colors.blue[200]))
-          ),
+          GestureDetector(
+            onTap: () async {
+              var box = await Hive.openBox('animes');
+              var index = -1;
+              index = box.values.toList().indexWhere((val)=>val['name'] == this.anime['name']);
+              if(index != -1){
+                box.deleteAt(index);
+                this.snack("Anime tolto dai preferiti");
+              }
+              else{
+                box.add(this.anime);
+                this.snack("Anime aggiunto ai preferiti");
+              }
+            },
+            child:Container(
+              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+              width: MediaQuery.of(context).size.width,
+              child:Text("Aggiungi ai preferiti",textAlign:TextAlign.right,style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold,color: Colors.blue[200]))
+            ),
+          )
         ]
       )
     );
   }
+  void snack(String txt){
+    _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(txt),duration: Duration(seconds: 3)));
+  }
   Widget gridView(dynamic an) {
-    return GridView.count(
-      crossAxisCount: 8,
-      children: List.generate(an['episodi'].length, (index) {
-        return Center(
-          child:GestureDetector(
-            onTap: (){
-              /*UtilService.showToast(
-                an['episodi'][index]
-              );*/
-              /*showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  // return object of type Dialog
-                  return AlertDialog(
-                    title: new Text("Alert Dialog title"),
-                    content: new Text(an['episodi'][index]),
-                    actions: <Widget>[
-                      // usually buttons at the bottom of the dialog
-                      new FlatButton(
-                        child: new Text("Close"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );*/
-              //String vid = an['episodi'][index]
-              Navigator.push(context, MaterialPageRoute(builder: (context) => VideoPage(an['episodi'][index].toString())));
-            },
-            child: Container(
-              child: Text((index + 1).toString(),style: TextStyle(fontSize: 25.0,fontWeight: FontWeight.bold)),
-            ) 
-          )
-          
-        );
-      })
+    return new FutureBuilder(
+      future: Future.wait([this.getActivity()]),
+      builder: (context, snapshot) {
+        if(snapshot.hasData){
+          List val = snapshot.data[0];
+          return GridView.count(
+            crossAxisCount: 8,
+            children: List.generate(an['episodi'].length, (index) {
+              return Center(
+                child:GestureDetector(
+                  onTap: (){
+                    var activity = {
+                      "anime" : an['name'],
+                      "episodio" : index.toString()
+                    };
+                    this.putActivity(activity);
+                    setState((){
+                      _ready=false;
+                      link = an['episodi'][index].toString();
+                    });
+                    UnityAdsFlutter.show('video');
+                  },
+                  child: Container(
+                    child: Text((index + 1).toString(),style: TextStyle(
+                      color: val.where((v)=>v['anime']==an['name']).where((c)=>c['episodio'] == index.toString()).length > 0 ? Colors.red : Colors.black, 
+                      fontSize: 25.0,
+                      fontWeight: FontWeight.bold
+                    )),
+                  ) 
+                )
+              );
+            })
+          );
+        }
+      }
     );
   }
-  
-
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      key: _scaffoldKey,
       appBar: new AppBar(
         title: new Text(this.anime['name'])
       ),
       body: new Container(
         height: MediaQuery.of(context).size.height,
-
-        child: animeDetail(this.anime)
+        child: Column(    
+          children: [
+            ConnectionStatusBar(),
+            Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  detail(this.anime),
+                  episodi()
+                ],
+              )
+            )
+          ]
+        )
       )
     );
   }
-  Widget animeDetail(dynamic an){
-    return  new Column(    
-      children: [
-        ConnectionStatusBar(),
-        all(an)
-      ]
-    );
   
-  }
-  Widget all(an){
-    return new Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          detail(an),
-          episodi(an)
-        ],
-      )
-    );
-  }
 }
  
   /*Widget episodi(){

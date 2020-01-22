@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:hello/activity.dart';
 import 'package:hello/ricerca.dart';
-import 'package:hello/util.dart';
 import 'package:hive/hive.dart';
 import 'package:image_ink_well/image_ink_well.dart';
 import 'anime.dart';
 import 'decoration.dart';
 import 'preferiti.dart';
 import 'rest_api.dart';
-import 'calendario.dart';
 import 'list.dart';
 import 'ricerca.dart';
 import 'SemplificataPage.dart';
 import 'package:connection_status_bar/connection_status_bar.dart';
+
+import 'swipe.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -117,21 +117,37 @@ class _MainPageState extends State<MainPage>{
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Container(
-                    width: MediaQuery.of(context).size.width / 4.5,
-                    margin: EdgeInsets.all(5.0),
-                    decoration: DecorationService.dec(val[0]['image'])
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(val[0])));
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 4.5,
+                      margin: EdgeInsets.all(5.0),
+                      decoration: DecorationService.dec(val[0]['image'])
+                    )
                   ),
-                  Container(
-                    width: MediaQuery.of(context).size.width / 4.5,
-                    margin: EdgeInsets.all(5.0),
-                    decoration: DecorationService.dec(val[1]['image'])
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(val[1])));
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 4.5,
+                      margin: EdgeInsets.all(5.0),
+                      decoration: DecorationService.dec(val[1]['image'])
+                    )
                   ),
-                  Container(
-                    width: MediaQuery.of(context).size.width / 4.5,
-                    margin: EdgeInsets.all(5.0),
-                    decoration: DecorationService.dec(val[2]['image'])
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(val[2])));
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 4.5,
+                      margin: EdgeInsets.all(5.0),
+                      decoration: DecorationService.dec(val[2]['image'])
+                    )
                   )
+                  
                 ],
               )
             );
@@ -147,81 +163,7 @@ class _MainPageState extends State<MainPage>{
       child:Text(txt,textAlign:TextAlign.left,style: TextStyle(fontSize: 25.0,fontWeight: FontWeight.bold))
     );
   }
-  Container grid() {
-    var x = MediaQuery.of(context).size.width;
-    
-    return new Container(
-      margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-      width: MediaQuery.of(context).size.width,
-      child: Column(
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: (){
-                  //Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(today[0])));
-                },
-                child :Container(
-                  margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-                  decoration: DecorationService.decEvidenza(),
-                  width: (x/4)-20,
-                  child: Center(
-                    child: new Icon(Icons.add_circle,size:50.0)
-                  ),
-                  height: 60,
-                )
-              ),
-              GestureDetector(
-                onTap: (){
-                  //Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(today[1])));
-                },
-                child :Container(
-                  margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-                  decoration: DecorationService.decEvidenza(),
-                  width: (x/4)-20,
-                  child: Center(
-                    child: new Icon(Icons.add_circle,size:50.0)
-                  ),
-                  height: 60,
-                )
-              ),
-              GestureDetector(
-                onTap: (){
-                  //Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(today[2])));
-                },
-                child :Container(
-                  margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-                  decoration: DecorationService.decEvidenza(),
-                  width: (x/4)-20,
-                  child: Center(
-                    child: new Icon(Icons.add_circle,size:50.0)
-                  ),
-                  height: 60,
-                )
-              ),
-              GestureDetector(
-                onTap: (){
-                  //Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(today[2])));
-                },
-                child :Container(
-                  margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-                  decoration: DecorationService.decEvidenza(),
-                  width: (x/4)-20,
-                  child: Center(
-                    child: new Icon(Icons.add_circle,size:50.0)
-                  ),
-                  height: 60,
-                )
-              ),
-            ]
-          ),
-        ]
-      )
-    );
-   
-  }
+  
   Widget avanzata(){
     return new  GestureDetector(
       onTap: (){
@@ -262,6 +204,7 @@ class _MainPageState extends State<MainPage>{
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(preferiti[0])));
                     },
+                    
                     size: MediaQuery.of(context).size.width/4,
                     image: NetworkImage(preferiti[0]['image']),
                     splashColor: Colors.white24,
@@ -292,13 +235,40 @@ class _MainPageState extends State<MainPage>{
     else{
       return SizedBox.shrink();
     }
-
+  }
+  Widget swipe(dynamic an){
+    return new Container(
+      height:70.0,
+      margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+      alignment: Alignment.center,
+      child: SwipeButton(
+        thumb: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Align(
+                widthFactor: 0.90,
+                child: Icon(
+                  Icons.chevron_right,
+                  size: 60.0,
+                  color: Colors.white,
+                )),
+          ],
+        ),
+        content: Center(child: Text("RANDOM",style: TextStyle(color: Colors.white,fontSize: 25.0,fontWeight: FontWeight.bold))),
+        onChanged: (result) {
+          if (result == SwipePosition.SwipeRight) {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(an)));
+          } else {}
+        },
+      ),
+      
+    );
   }
   
   Widget elenco(String txt){
     return new GestureDetector(
       onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => ListPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => PreferitiPage()));
       },
       child: new Container(
         height:50,
@@ -323,57 +293,30 @@ class _MainPageState extends State<MainPage>{
     );
   }
 
-  /*Widget activity(){
+  Widget activity(){
     return new GestureDetector(
         onTap: (){
           Navigator.push(context, MaterialPageRoute(builder: (context) => ActivityPage()));
         },
         child: Container(
             width: MediaQuery.of(context).size.width,
-            margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 20.0, bottom: 20.0),
-            child: new Text("Visualizza attività precedenti",textAlign:TextAlign.center,style: TextStyle(color:Colors.blueAccent,fontSize: 18.0,fontWeight: FontWeight.bold))
+            margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+            child: new Text("Visualizza attività precedenti",textAlign:TextAlign.center,style: TextStyle(color:Colors.black,fontSize: 18.0,fontWeight: FontWeight.bold))
         )
     );
-  }*/
-  /*Widget orList(List update){
-    update.map((val)  {
-        
-      return  Container(
-        width: MediaQuery.of(context).size.width,
-        margin: EdgeInsets.all(10.0),
-        
-        
-      );
-        
-    });
-    return new Container(
-      margin: EdgeInsets.symmetric(vertical: 20.0),
-      height: 200.0,
-      child: new ListView(
-      scrollDirection: Axis.horizontal,
-      children: <Widget>[
-        Container(width: 160.0, color: Colors.blue,),
-        Container(width: 160.0, color: Colors.green,),
-        Container(width: 160.0, color: Colors.cyan,),
-        Container(width: 160.0, color: Colors.black,),
-      ],
-    )
-    );
-  }*/
+  }
+ 
   
   Widget albero(){
     return new FutureBuilder(
-        future: Future.wait([this.getPreferiti(), ApiService.getAnimeEvidenza(), ApiService.getAnimeSuggeriti()]),
+        future: Future.wait([this.getPreferiti(), ApiService.getAnimeEvidenza(), ApiService.getAnimeSuggeriti(), ApiService.randomAnime()]),
         builder: (context, snapshot) {
-          
           if (snapshot.hasData) {
-            
             List pref = snapshot.data[0];
             List ev = snapshot.data[1];
             List sug = snapshot.data[2];
-           
-            
-            
+            dynamic ran = snapshot.data[3];
+            print(ran);
             return new SingleChildScrollView(
               child: new ConstrainedBox(
                 constraints: new BoxConstraints(),
@@ -397,15 +340,35 @@ class _MainPageState extends State<MainPage>{
                     evidenza(ev),
                     testo('Suggeriti'),
                     suggeriti(sug),
+                    activity(),
                     elenco("Preferiti"),
-                    elenco("Archivio anime"),
-                    avanzata(),
-                    grid(),
-                    
-                       
-
-
-                    
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => ListPage()));
+                      },
+                      child: new Container(
+                        height:50,
+                        decoration: DecorationService.decEvidenza(),
+                        width: MediaQuery.of(context).size.width,
+                        margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.max,
+                          children:[
+                            Container(
+                              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+                              child: new Text("Archivio anime",style: TextStyle(fontSize: 25.0,fontWeight: FontWeight.bold))
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+                              child: new Icon(Icons.arrow_forward_ios)
+                            )
+                          ]
+                        )
+                      )
+                    ),
+                    //avanzata(),
+                    swipe(ran),
                     semplificata()
                   ]
                 )
