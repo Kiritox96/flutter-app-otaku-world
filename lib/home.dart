@@ -305,18 +305,31 @@ class _MainPageState extends State<MainPage>{
         )
     );
   }
- 
+  Future<List<dynamic>> getEvidenza() async {
+    var box = await Hive.openBox('evidenza');
+    return box.values.toList()[0];
+  }
+   Future<List<dynamic>> getSuggeriti() async {
+    var box = await Hive.openBox('suggeriti');
+    return box.values.toList()[0];
+  }
+   Future<dynamic> getFirst() async {
+    var box = await Hive.openBox('first');
+    return box.values.toList();
+  }
   
   Widget albero(){
     return new FutureBuilder(
-        future: Future.wait([this.getPreferiti(), ApiService.getAnimeEvidenza(), ApiService.getAnimeSuggeriti(), ApiService.randomAnime()]),
+        future: Future.wait([this.getPreferiti(), ApiService.getAnimeEvidenza(), ApiService.getAnimeSuggeriti()]),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List pref = snapshot.data[0];
+
             List ev = snapshot.data[1];
+            this.putEvidenza(ev);
             List sug = snapshot.data[2];
-            dynamic ran = snapshot.data[3];
-            print(ran);
+            this.putSuggeriti(sug);
+            this.putFirst();
             return new SingleChildScrollView(
               child: new ConstrainedBox(
                 constraints: new BoxConstraints(),
@@ -368,7 +381,80 @@ class _MainPageState extends State<MainPage>{
                       )
                     ),
                     //avanzata(),
-                    swipe(ran),
+                    //swipe(ran),
+                    semplificata()
+                  ]
+                )
+              )
+            );
+          }
+          return waiting();
+        }
+    );
+  }
+  Widget alberoDopo(){
+    return new FutureBuilder(
+        future: Future.wait([this.getPreferiti(), this.getEvidenza(), this.getSuggeriti()]),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            List pref = snapshot.data[0];
+
+            List ev = snapshot.data[1];
+            
+            List sug = snapshot.data[2];
+            
+            return new SingleChildScrollView(
+              child: new ConstrainedBox(
+                constraints: new BoxConstraints(),
+                child: new Column(
+                  children: [
+                    ConnectionStatusBar(),
+                    Container(
+                      margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 0, bottom: 0),
+                      width: MediaQuery.of(context).size.width,
+                      color: Color(0x060606),
+                      height: 210,
+                      child:Column(
+                        children:[
+                          Image.asset("logo.png"),
+                          Divider(height: 2, color: Colors.black)
+                        ]
+                      )
+                    ),
+                    preferiti(pref),
+                    testo('In evidenza'),
+                    evidenza(ev),
+                    testo('Suggeriti'),
+                    suggeriti(sug),
+                    activity(),
+                    elenco("Preferiti"),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => ListPage()));
+                      },
+                      child: new Container(
+                        height:50,
+                        decoration: DecorationService.decEvidenza(),
+                        width: MediaQuery.of(context).size.width,
+                        margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.max,
+                          children:[
+                            Container(
+                              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+                              child: new Text("Archivio anime",style: TextStyle(fontSize: 25.0,fontWeight: FontWeight.bold))
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+                              child: new Icon(Icons.arrow_forward_ios)
+                            )
+                          ]
+                        )
+                      )
+                    ),
+                    //avanzata(),
+                    //swipe(ran),
                     semplificata()
                   ]
                 )
@@ -393,6 +479,18 @@ class _MainPageState extends State<MainPage>{
             child: new Text("Passa alla versione semplificata",textAlign:TextAlign.center,style: TextStyle(color:Colors.blueAccent,fontSize: 18.0,fontWeight: FontWeight.bold))
         )
     );
+  }
+  void putFirst() async {
+    var box = await Hive.openBox('first');
+    box.add(true);
+  }
+  void putEvidenza(List ev) async {
+    var box = await Hive.openBox('evidenza');
+    box.add(ev);
+  }
+  void putSuggeriti(List sug) async {
+    var box = await Hive.openBox('suggeriti');
+    box.add(sug);
   }
   Widget waiting(){
     return new Center(
@@ -433,8 +531,26 @@ class _MainPageState extends State<MainPage>{
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
-      child: albero()
+    return new FutureBuilder(
+        future: Future.wait([this.getFirst()]),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            bool val = false;
+            List<dynamic> first = snapshot.data[0];
+            if(first.isNotEmpty){
+              val = true;
+            }
+            print(val);
+            if(!val){
+              return albero();
+            }
+            else{
+              return alberoDopo();
+            }
+          }
+          return albero();
+        }
+      
     );
   }
 }
