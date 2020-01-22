@@ -25,7 +25,6 @@ dependencies:
   cupertino_icons: ^0.1.2
   http: ^0.11.3
   carousel_slider: ^1.3.0
-  flip_card: ^0.4.4
   connection_status_bar: ^1.1.1
   page_indicator: ^0.3.0
   badges: ^1.1.0

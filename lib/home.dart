@@ -265,6 +265,7 @@ class _MainPageState extends State<MainPage>{
     );
   }
   
+  
   Widget elenco(String txt){
     return new GestureDetector(
       onTap: (){
