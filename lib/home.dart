@@ -1,8 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:hello/activity.dart';
-import 'package:hello/ricerca.dart';
+import 'activity.dart';
+import 'auth.dart';
+import 'ricerca.dart';
 import 'package:hive/hive.dart';
 import 'package:image_ink_well/image_ink_well.dart';
 import 'anime.dart';
@@ -10,10 +11,9 @@ import 'decoration.dart';
 import 'preferiti.dart';
 import 'rest_api.dart';
 import 'list.dart';
-import 'ricerca.dart';
 import 'SemplificataPage.dart';
 import 'package:connection_status_bar/connection_status_bar.dart';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'swipe.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,10 +22,38 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-
+  final FirebaseMessaging _fcm = FirebaseMessaging();
   
   @override
   Widget build(BuildContext context) {
+    _fcm.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: ListTile(
+              title: Text(message['notification']['title']),
+              subtitle: Text(message['notification']['body']),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Ok'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          ),
+        );
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+          print("onLaunch: $message");
+          // TODO optional
+      },
+      onResume: (Map<String, dynamic> message) async {
+          print("onResume: $message");
+          // TODO optional
+      },
+    );
     return new Scaffold(
       extendBody: true,
       backgroundColor: Colors.white,
@@ -37,13 +65,13 @@ class HomePageState extends State<HomePage> {
 
 
 class MainPage extends StatefulWidget {
+  
  @override
  _MainPageState createState() => _MainPageState();
 }
 
 
 class _MainPageState extends State<MainPage>{
- 
   Widget evidenza(List cans) {
     return new CarouselSlider(
       height: 175.0,
@@ -414,14 +442,11 @@ class _MainPageState extends State<MainPage>{
                       margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 0, bottom: 0),
                       width: MediaQuery.of(context).size.width,
                       color: Color(0x060606),
-                      height: 210,
-                      child:Column(
-                        children:[
-                          Image.asset("logo.png"),
-                          Divider(height: 2, color: Colors.black)
-                        ]
-                      )
+                      height: 250,
+                      child:Image.asset("logo.png"),
                     ),
+                    profilo(),
+                    Divider(height: 2, color: Colors.black),
                     preferiti(pref),
                     testo('In evidenza'),
                     evidenza(ev),
@@ -481,6 +506,18 @@ class _MainPageState extends State<MainPage>{
         )
     );
   }
+  Widget profilo(){
+    return new GestureDetector(
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
+        },
+        child: Container(
+            width: MediaQuery.of(context).size.width,
+            margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 20.0, bottom: 20.0),
+            child: new Text("Vai al tuo profilo",textAlign:TextAlign.right,style: TextStyle(color:Colors.blueAccent,fontSize: 18.0,fontWeight: FontWeight.bold))
+        )
+    );
+  }
   void putFirst() async {
     var box = await Hive.openBox('first');
     box.add(true);
@@ -532,6 +569,7 @@ class _MainPageState extends State<MainPage>{
 
   @override
   Widget build(BuildContext context) {
+    
     return new FutureBuilder(
         future: Future.wait([this.getFirst()]),
         builder: (context, snapshot) {

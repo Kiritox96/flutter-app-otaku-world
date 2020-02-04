@@ -1,6 +1,6 @@
 import 'package:connection_status_bar/connection_status_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:hello/video.dart';
+import 'video.dart';
 import 'package:hive/hive.dart';
 import 'package:unity_ads_flutter/unity_ads_flutter.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hello/advanced_list.dart';
+import 'advanced_list.dart';
 class RicercaPage extends StatefulWidget {
   @override
   _RicercaPageState createState() => _RicercaPageState();

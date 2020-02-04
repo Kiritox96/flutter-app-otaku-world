@@ -1,4 +1,4 @@
-package com.example.hello
+package com.otaku.world
 
 import android.os.Bundle
 

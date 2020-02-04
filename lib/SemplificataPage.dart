@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hello/home.dart';
-import 'package:hello/ricerca.dart';
+import 'home.dart';
+import 'ricerca.dart';
 import 'list.dart';
 import 'preferiti.dart';
 import 'package:connection_status_bar/connection_status_bar.dart';

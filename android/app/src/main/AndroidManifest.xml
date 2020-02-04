@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.hello">
+    package="com.otaku.world">
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
@@ -10,7 +10,7 @@
     <application
         tools:replace="android:appComponentFactory"
         android:name="io.flutter.app.FlutterApplication"
-        android:label="hello"
+        android:label="Otaku-World"
         android:appComponentFactory="androidx"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -31,6 +31,10 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="FLUTTER_NOTIFICATION_CLICK"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
     </application>

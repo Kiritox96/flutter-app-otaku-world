@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hello/decoration.dart';
+import 'decoration.dart';
 import 'package:hive/hive.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 

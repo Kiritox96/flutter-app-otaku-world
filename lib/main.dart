@@ -15,10 +15,9 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  // Applcation context APP
   @override
   Widget build(BuildContext context) {
-
+    
     // Fixing App Orientation.
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return new MaterialApp(

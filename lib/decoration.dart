@@ -18,6 +18,15 @@ class DecorationService{
       borderRadius: BorderRadius.all(Radius.circular(8.0)),
     );
   }
+  static Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) {
+    if (message.containsKey('data')) {
+      final dynamic data = message['data'];
+    }
+
+    if (message.containsKey('notification')) {
+      final dynamic notification = message['notification'];
+    }
+  }
   
   static BoxDecoration decFlip() {
     return new BoxDecoration(

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "251580488546",
+    "firebase_url": "https://otaku-world-7d1b6.firebaseio.com",
+    "project_id": "otaku-world-7d1b6",
+    "storage_bucket": "otaku-world-7d1b6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:251580488546:android:87520010df7bd0b017aa3b",
+        "android_client_info": {
+          "package_name": "com.otaku.world"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "251580488546-d6j9faaba4l452r8c8iqb2hf5a3d36rr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAz51SrrcUW3Fkl4MKAD03bKySR18E5Gjo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "251580488546-d6j9faaba4l452r8c8iqb2hf5a3d36rr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
