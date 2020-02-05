@@ -59,10 +59,6 @@ class _AnimePageState extends State<AnimePage> with UnityAdsListener{
               ],
             )
           )
-         
-          
-
-          
         ],
       )
     );
@@ -88,7 +84,7 @@ class _AnimePageState extends State<AnimePage> with UnityAdsListener{
     _ready = false;
     super.initState();
   }
- @override
+  @override
   void onUnityAdsError(UnityAdsError error, String message) {
     print('$error occurred: $message');
     setState((){

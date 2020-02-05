@@ -47,6 +47,29 @@ class ApiService {
     }
   }
 
+  static Future<dynamic> takeDataFromCloud(String email) async {
+    var url = '${URLS.BASE_URL}/test?email=' + email + '&type=output';
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      var jsonObj = json.decode(response.body);
+      return jsonObj;
+    } else {
+      return null;
+    }
+  }
+  static Future<dynamic> sendDataOnCloud(String email, List<dynamic> preferiti, List<dynamic> attivita) async {
+    var pref = preferiti.map((pref)=>pref['name']).join(',');
+    var att = attivita.map((act)=>act['anime'] + '00xxnumxx00' +  act['episodio']).join(',');
+    
+    var url = '${URLS.BASE_URL}/test?email=' + email + '&type=input&preferiti='+pref.toString()+'&attivita='+att.toString();
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      var jsonObj = json.decode(response.body);
+      return jsonObj;
+    } else {
+      return null;
+    }
+  }
 
 
   static Future<List> getAnimeEvidenza() async {

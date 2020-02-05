@@ -1,9 +1,11 @@
 import 'dart:convert';
-
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:OtakuWorld/home.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+
+import 'rest_api.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -237,6 +239,159 @@ class ProfilePage extends StatefulWidget {
 class _ProfileState extends State<ProfilePage> {
   _ProfileState(this.signOut);
   final dynamic signOut;
+   void _showDialog(String txt, String title) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(txt),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Chiudi"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  void putActivity(dynamic activity) async {
+    var box = await Hive.openBox('activities');
+    //box.clear();
+    box.add(activity);
+    print(box.values.toList());
+  }
+ 
+  void _showDialogTake(String txt, String title, dynamic data) async {
+    var box = await Hive.openBox('activities');
+    await box.clear();
+    data['data']['attivita'].forEach((act)=>this.putActivity({"anime" : act['anime'].toString(),"episodio" : act['episodio'].toString()}));
+
+    //update(data['data']['preferiti'],data['data']['attivita']);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(txt),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Chiudi"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  void resetCloud() async {
+    var user = await Hive.openBox('user');
+    var email = user.get('email');
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Resetta dati in cloud"),
+          content: new Text("Sei sicuro di voler completare l'operazione?"),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Chiudi"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text("Reset"),
+              onPressed: () {
+                ApiService.sendDataOnCloud(email, [], []);
+                Navigator.of(context).pop();
+                _showDialog("I dati sono stati resettati", "Operazione effettuata con successo");
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  
+  void takeCloud() async {
+    var user = await Hive.openBox('user');
+    var email = user.get('email');
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Ricevi dati"),
+          content: new Text("Sei sicuro di voler completare l'operazione?"),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Chiudi"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text("Invia"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                ApiService.takeDataFromCloud(email).then((data)=>{
+                  if(data != null){
+                    _showDialogTake("Hai ricevuto i dati", "Operazione effettuata con successo",data)
+                  } else {
+                    _showDialogTake("Dati non ricevuti", "Riprova piu tardi",data)
+                  }  
+                });
+              },
+            ),
+          ],
+        );
+      }
+    );
+  }
+ 
+  void sendCloud() async {
+    var box = await Hive.openBox('animes');
+    var acts = await Hive.openBox('activities');
+    var user = await Hive.openBox('user');
+    var email = user.get('email');
+    var list = box.values.toList();
+    var attivita = acts.values.toList();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Invio dati"),
+          content: new Text("Sei sicuro di voler completare l'operazione?"),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Chiudi"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text("Invia"),
+              onPressed: () {
+                var data = ApiService.sendDataOnCloud(email, list,attivita);
+                if(data != null){
+                  Navigator.of(context).pop();
+                  _showDialog("I dati sono stati inviati", "Operazione effettuata con successo");
+                } else {
+                  Navigator.of(context).pop();
+                  _showDialog("Dati non inviati", "Riprova piu tardi");
+                }     
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -249,13 +404,110 @@ class _ProfileState extends State<ProfilePage> {
         backgroundColor: Colors.orange[200],
       ),
       body: Center(
-        child: new FlatButton(
-          child: new Text("LOGOUT"),
-          onPressed: () {
-            signOut();
-          },
-        ),
-      ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            Slidable(
+              
+              actionExtentRatio: 0.25,
+              child: new Container(
+                color: Colors.white,
+                child: new ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: Text('<<<'),
+                    foregroundColor: Colors.blue,
+                  ),
+                  title: new Text('Ricevi dati dal cloud.'),
+                  subtitle: new Text('Sincronizza preferiti e attività.'),
+                ),
+              ),
+              actions: <Widget>[
+                new IconSlideAction(
+                  caption: 'Ricevi',
+                  color: Colors.blue,
+                  icon: Icons.add_to_home_screen,
+                  onTap: () => takeCloud(),
+                )
+              ], 
+              actionPane: SlidableDrawerActionPane()
+            ),
+            Slidable(
+              actionExtentRatio: 0.25,
+              child: new Container(
+                color: Colors.white,
+                child: new ListTile( 
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: Text('<<<'),
+                    foregroundColor: Colors.blue,
+                  ),
+                  title: new Text('Invia dati al cloud.'),
+                  subtitle: new Text('Preferiti e attività verranno salvati nel cloud.'),
+                ),
+              ),
+              actions: <Widget>[
+                new IconSlideAction(
+                  caption: 'Salva',
+                  color: Colors.blue,
+                  icon: Icons.backup,
+                  onTap: () => sendCloud(),
+                )
+              ], 
+              actionPane: SlidableDrawerActionPane()
+            ),
+            SizedBox(height:50.0),
+            Slidable(
+              actionExtentRatio: 0.25,
+              child: new Container(
+                color: Colors.white,
+                child: new ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: Text('<<<'),
+                    foregroundColor: Colors.blue,
+                  ),
+                  title: new Text('Esci dall\'account.'),
+                ),
+              ),
+              actions: <Widget>[
+                new IconSlideAction(
+                  caption: 'Logout',
+                  color: Colors.blue,
+                  icon: Icons.exit_to_app,
+                  onTap: () => signOut(),
+                )
+              ], 
+              actionPane: SlidableDrawerActionPane()
+            ),
+            SizedBox(height:50.0),
+            Slidable(
+              actionExtentRatio: 0.25,
+              child: new Container(
+                color: Colors.white,
+                child: new ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: Text('<<<'),
+                    foregroundColor: Colors.blue,
+                  ),
+                  title: new Text('Resetta i dati del cloud.'),
+                ),
+              ),
+              actions: <Widget>[
+                new IconSlideAction(
+                  caption: 'Reset',
+                  color: Colors.blue,
+                  icon: Icons.restore,
+                  onTap: () => resetCloud(),
+                )
+              ], 
+              actionPane: SlidableDrawerActionPane()
+            )
+          ]
+        )
+      )
     );
   }
 }
