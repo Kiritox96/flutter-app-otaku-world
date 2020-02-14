@@ -18,6 +18,15 @@ class DecorationService{
       borderRadius: BorderRadius.all(Radius.circular(8.0)),
     );
   }
+  static BoxDecoration decNoShadow(String img) {
+    return new BoxDecoration(
+      image: new DecorationImage(
+        image: new NetworkImage(img),
+        fit: BoxFit.cover,
+      ),
+      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+    );
+  }
   static Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) {
     if (message.containsKey('data')) {
       final dynamic data = message['data'];

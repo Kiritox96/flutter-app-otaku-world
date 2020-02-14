@@ -129,7 +129,7 @@ class _AnimePageState extends State<AnimePage> with UnityAdsListener{
           testo('Episodi'),
           Container(
             width: MediaQuery.of(context).size.width ,
-            height: 300,
+            height: 250,
             child: gridView(this.anime),
           ),
           GestureDetector(
@@ -166,7 +166,7 @@ class _AnimePageState extends State<AnimePage> with UnityAdsListener{
         if(snapshot.hasData){
           List val = snapshot.data[0];
           return GridView.count(
-            crossAxisCount: 8,
+            crossAxisCount: 6,
             children: List.generate(an['episodi'].length, (index) {
               return Center(
                 child:GestureDetector(
@@ -185,7 +185,7 @@ class _AnimePageState extends State<AnimePage> with UnityAdsListener{
                   child: Container(
                     child: Text((index + 1).toString(),style: TextStyle(
                       color: val.where((v)=>v['anime']==an['name']).where((c)=>c['episodio'] == index.toString()).length > 0 ? Colors.red : Colors.black, 
-                      fontSize: 25.0,
+                      fontSize: 20.0,
                       fontWeight: FontWeight.bold
                     )),
                   ) 
@@ -193,6 +193,9 @@ class _AnimePageState extends State<AnimePage> with UnityAdsListener{
               );
             })
           );
+        } else {
+          return CircularProgressIndicator();
+
         }
       }
     );
@@ -204,21 +207,23 @@ class _AnimePageState extends State<AnimePage> with UnityAdsListener{
       appBar: new AppBar(
         title: new Text(this.anime['name'])
       ),
-      body: new Container(
-        height: MediaQuery.of(context).size.height,
-        child: Column(    
-          children: [
-            ConnectionStatusBar(),
-            Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  detail(this.anime),
-                  episodi()
-                ],
+      body: new SingleChildScrollView(
+        child:new Container(
+          height: MediaQuery.of(context).size.height,
+          child: Column(    
+            children: [
+              ConnectionStatusBar(),
+              Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    detail(this.anime),
+                    episodi()
+                  ],
+                )
               )
-            )
-          ]
+            ]
+          )
         )
       )
     );

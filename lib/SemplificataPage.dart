@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'activity.dart';
+import 'auth.dart';
 import 'home.dart';
 import 'ricerca.dart';
 import 'list.dart';
@@ -54,6 +56,33 @@ class _SemplificataPageState extends State<SemplificataPage> {
         )
     );
   }
+  Widget attivita() {
+    return new GestureDetector(
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => ActivityPage()));
+        },
+        child: new Container(
+            height: 50,
+            decoration: decFlip(),
+            width: MediaQuery.of(context).size.width,
+            margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Container(
+                      margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+                      child: new Text("Attività", style: TextStyle(color: Colors.white, fontSize: 25.0, fontWeight: FontWeight.bold))
+                  ),
+                  Container(
+                      margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+                      child: new Icon(Icons.arrow_forward_ios)
+                  )
+                ]
+            )
+        )
+    );
+  }
 
   
   Widget preferiti() {
@@ -83,6 +112,33 @@ class _SemplificataPageState extends State<SemplificataPage> {
       )
     );
   }
+   Widget cloud() {
+    return new GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
+      },
+      child: new Container(
+        height: 50,
+        decoration: decFlip(),
+        width: MediaQuery.of(context).size.width,
+        margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Container(
+              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+              child: new Text("Funzioni cloud", style: TextStyle(color: Colors.white, fontSize: 25.0, fontWeight: FontWeight.bold))
+            ),
+            Container(
+              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+              child: new Icon(Icons.arrow_forward_ios)
+            )
+          ]
+        )
+      )
+    );
+  }
   Widget avanzata(){
     return new  GestureDetector(
       onTap: (){
@@ -95,6 +151,7 @@ class _SemplificataPageState extends State<SemplificataPage> {
       )
     );
   }
+
 
   Container logo() {
     return new Container(
@@ -140,6 +197,8 @@ class _SemplificataPageState extends State<SemplificataPage> {
                 elenco(),
                 //avanzata(),
                 preferiti(),
+                attivita(),
+                cloud(),
                 home()
               ]
             )

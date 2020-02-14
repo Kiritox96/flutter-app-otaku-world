@@ -35,6 +35,7 @@ dependencies:
   unity_ads_flutter: ^1.1.0
   firebase_core: ^0.4.0+9
   firebase_messaging: ^5.0.2
+  catcher: ^0.1.2
 
 dev_dependencies:
 

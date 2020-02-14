@@ -92,7 +92,7 @@ class _MainPageState extends State<MainPage>{
                     Container(
                       width: MediaQuery.of(context).size.width / 3,
                       margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-                      decoration: DecorationService.dec(i['image']),
+                      decoration: DecorationService.decNoShadow(i['image']),
                     ),
                     Container(
                       width: (MediaQuery.of(context).size.width / 3)-10,
@@ -514,7 +514,7 @@ class _MainPageState extends State<MainPage>{
         child: Container(
             width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 20.0, bottom: 20.0),
-            child: new Text("Vai al tuo profilo",textAlign:TextAlign.right,style: TextStyle(color:Colors.blueAccent,fontSize: 18.0,fontWeight: FontWeight.bold))
+            child: new Text("Vai alle funzioni cloud",textAlign:TextAlign.right,style: TextStyle(color:Colors.blueAccent,fontSize: 18.0,fontWeight: FontWeight.bold))
         )
     );
   }
@@ -536,7 +536,6 @@ class _MainPageState extends State<MainPage>{
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children:[
-          CircularProgressIndicator(),
           Container(
             width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 20.0, bottom: 20.0),
