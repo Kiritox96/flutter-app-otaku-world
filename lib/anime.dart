@@ -42,7 +42,7 @@ class _AnimePageState extends State<AnimePage> with UnityAdsListener{
           ),
           Container(
             height: 200,
-             width: MediaQuery.of(context).size.width - (MediaQuery.of(context).size.width / 3.5) - 40,
+            width: MediaQuery.of(context).size.width - (MediaQuery.of(context).size.width / 3.5) - 40,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
@@ -51,11 +51,11 @@ class _AnimePageState extends State<AnimePage> with UnityAdsListener{
                   width: MediaQuery.of(context).size.width,
                   child:Text("Trama",textAlign:TextAlign.left,style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold))
                 ),
-                Container(
+                Expanded(child:Container(
                   margin: EdgeInsets.only(right: 20.0, left: 10.0, top: 10.0, bottom: 0),
                   width: MediaQuery.of(context).size.width,
                   child: Text(an['trama'],textAlign: TextAlign.justify,overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: 12.0),maxLines: 10)
-                )
+                ))
               ],
             )
           )

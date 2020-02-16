@@ -89,32 +89,32 @@ class _MainPageState extends State<MainPage>{
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Container(
+                    Expanded(child:Container(
                       width: MediaQuery.of(context).size.width / 3,
                       margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
                       decoration: DecorationService.decNoShadow(i['image']),
-                    ),
-                    Container(
+                    )),
+                    Expanded(child:Container(
                       width: (MediaQuery.of(context).size.width / 3)-10,
                       margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Container(
+                          Expanded(child:Container(
                             margin: EdgeInsets.only(top: 10.0),
                             child: Text(i['name'],textAlign:TextAlign.center,style: TextStyle(fontSize: 15.0,fontWeight: FontWeight.bold)),
-                          ),
-                          Container(
+                          )),
+                          Expanded(child:Container(
                             margin: EdgeInsets.only(top: 10.0),
                             child: Text(i['episodi'].length.toString() + " episodi",textAlign:TextAlign.center,style: TextStyle(fontSize: 15.0)),
-                          ),
+                          )),
                           Container(
                             margin: EdgeInsets.only(top: 10.0),
                             child: Text(i['generi'].join(' , '),textAlign:TextAlign.center,style: TextStyle(fontSize: 12.0)),
                           )
                         ],
                       )
-                    )
+                    ))
                   ]
                 )
 
@@ -423,7 +423,7 @@ class _MainPageState extends State<MainPage>{
   }
   Widget alberoDopo(){
     return new FutureBuilder(
-        future: Future.wait([this.getPreferiti(), this.getEvidenza(), this.getSuggeriti()]),
+        future: Future.wait([this.getPreferiti(), this.getEvidenza(), this.getSuggeriti(),ApiService.randomAnime()]),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List pref = snapshot.data[0];
@@ -432,6 +432,7 @@ class _MainPageState extends State<MainPage>{
             
             List sug = snapshot.data[2];
             
+            dynamic ran = snapshot.data[3];
             return new SingleChildScrollView(
               child: new ConstrainedBox(
                 constraints: new BoxConstraints(),
@@ -480,7 +481,7 @@ class _MainPageState extends State<MainPage>{
                       )
                     ),
                     //avanzata(),
-                    //swipe(ran),
+                    swipe(ran),
                     semplificata()
                   ]
                 )

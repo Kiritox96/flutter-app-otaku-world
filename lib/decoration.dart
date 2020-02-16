@@ -63,6 +63,19 @@ class DecorationService{
         color: Colors.white
     );
   }
+  static BoxDecoration decBlue() {
+    return new BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+        boxShadow: [
+          new BoxShadow(
+            color: Colors.black45,
+            offset: new Offset(5.0, 4.0),
+            blurRadius: 2.0,
+          )
+        ],
+        color: Colors.blue[200]
+    );
+  }
   static BoxDecoration decFlipGrey() {
     return new BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(8.0)),

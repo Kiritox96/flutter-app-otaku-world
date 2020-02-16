@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:catcher/catcher_plugin.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -30,11 +32,13 @@ class MyApp extends StatelessWidget {
     
     // Fixing App Orientation.
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-   
+    FirebaseAnalytics analytics = FirebaseAnalytics();
     return new MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-
+      navigatorObservers: [
+        FirebaseAnalyticsObserver(analytics: analytics),
+      ],
       //First page
       home: new SplashPage(),
       //Routes

@@ -41,7 +41,7 @@ class _ActivityPageState extends State<ActivityPage> {
                           actionPane: SlidableDrawerActionPane(),
                           actionExtentRatio: 0.25,
                           child: Container(
-                            color: Colors.white,
+                            color: Colors.blue[200],
                             child: ListTile(
                              
                               title: Text(all[index]['anime']),

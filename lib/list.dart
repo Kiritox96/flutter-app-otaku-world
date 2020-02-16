@@ -102,15 +102,16 @@ class _ListPageState extends State<ListPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Container(
+                          Expanded(child:Container(
                             margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
                             width:150,
                             height: 100,
                             decoration: DecorationService.decNoShadow(all[index]['image']),
-                          ),
-                          Container(
-                            child: new Text(all[index]['name'], textAlign: TextAlign.center),
-                          )
+                          )),
+                          Expanded(child:Container(
+                            margin: EdgeInsets.only(right: 10.0, left: 10.0),
+                            child: new Text(all[index]['name'], textAlign: TextAlign.center,),
+                          ))
                         
                         ],
                       )
@@ -136,19 +137,34 @@ class _ListPageState extends State<ListPage> {
             print(snapshot.error);
             if(all.length > 0){
               return new GridView.count(
-                crossAxisCount: 3,
+                crossAxisCount: 2,
                 children: List.generate(all.length, (index) {
                   return Center(
                     child:GestureDetector(
                       onTap: (){
                         Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(all[index])));
                       },
-                      child: new Container(
-                        decoration: DecorationService.dec(all[index]['image']),
-                        width: MediaQuery.of(context).size.width / 4,
+                      child: Container(
+                        decoration: DecorationService.decEvidenza(),
+                        height: MediaQuery.of(context).size.width / 2,
                         margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-                        
-                      )
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Expanded(child:Container(
+                              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+                              width:150,
+                              height: 100,
+                              decoration: DecorationService.decNoShadow(all[index]['image']),
+                            )),
+                            Expanded(child:Container(
+                              margin: EdgeInsets.only(right: 10.0, left: 10.0),
+                              child: new Text(all[index]['name'], textAlign: TextAlign.center,),
+                            ))
+                          
+                          ],
+                        )
+                      ) 
                     )
                   );
                 })
