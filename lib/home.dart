@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'package:device_info/device_info.dart';
+import 'package:flurry/flurry.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -23,7 +26,33 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   final FirebaseMessaging _fcm = FirebaseMessaging();
-  
+   Future<void> initFlurry() async {
+
+    await Flurry.initialize(androidKey: "3926DZDM6WKBK73SCS48", iosKey: "6GD25QCHX74HKWKP7RQT", enableLog: true);
+    String id = await _getId();
+    Flurry.setUserId(id);
+    Flurry.logEvent("Init App");
+
+  }
+  Future<String> _getId() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if (Platform.isIOS) {
+      IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
+      return iosDeviceInfo.identifierForVendor; // unique ID on iOS
+    } else {
+      AndroidDeviceInfo androidDeviceInfo = await deviceInfo.androidInfo;
+      return androidDeviceInfo.androidId; // unique ID on Android
+    }
+  }
+  @override
+
+  void initState() {
+
+    super.initState();
+
+    initFlurry();
+
+  }
   @override
   Widget build(BuildContext context) {
     _fcm.configure(
@@ -79,12 +108,14 @@ class _MainPageState extends State<MainPage>{
         return Builder(
           builder: (BuildContext context) {
             return  GestureDetector(
-              onTap: (){
+              onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(i)));
+                Flurry.logEvent("Click anime " + i['name']);
+
               },
               child: Container(
                 decoration: DecorationService.decEvidenza(),
-                width: MediaQuery.of(context).size.width-10,
+                width: MediaQuery.of(context).size.width,
                 margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 0, bottom: 10.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -146,32 +177,37 @@ class _MainPageState extends State<MainPage>{
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   GestureDetector(
-                    onTap: (){
+                    onTap: ()  {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(val[0])));
+                      Flurry.logEvent("Click anime " + val[0]['name']);
+
                     },
                     child: Container(
                       width: MediaQuery.of(context).size.width / 4.5,
-                      margin: EdgeInsets.all(5.0),
+                      margin: EdgeInsets.all(2.0),
                       decoration: DecorationService.dec(val[0]['image'])
                     )
                   ),
                   GestureDetector(
-                    onTap: (){
+                    onTap: ()  {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(val[1])));
+                      Flurry.logEvent("Click anime " + val[1]['name']);
                     },
                     child: Container(
                       width: MediaQuery.of(context).size.width / 4.5,
-                      margin: EdgeInsets.all(5.0),
+                      margin: EdgeInsets.all(2.0),
                       decoration: DecorationService.dec(val[1]['image'])
                     )
                   ),
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(val[2])));
+                      Flurry.logEvent("Click anime " + val[2]['name']);
+
                     },
                     child: Container(
                       width: MediaQuery.of(context).size.width / 4.5,
-                      margin: EdgeInsets.all(5.0),
+                      margin: EdgeInsets.all(2.0),
                       decoration: DecorationService.dec(val[2]['image'])
                     )
                   )
@@ -194,8 +230,9 @@ class _MainPageState extends State<MainPage>{
   
   Widget avanzata(){
     return new  GestureDetector(
-      onTap: (){
+      onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) => RicercaPage()));
+        Flurry.logEvent("Click ricerca");
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -231,6 +268,7 @@ class _MainPageState extends State<MainPage>{
                   CircleImageInkWell(
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(preferiti[0])));
+                      Flurry.logEvent("Click anime " + preferiti[0]['name']);
                     },
                     
                     size: MediaQuery.of(context).size.width/4,
@@ -240,6 +278,7 @@ class _MainPageState extends State<MainPage>{
                    CircleImageInkWell(
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(preferiti[1])));
+                      Flurry.logEvent("Click anime " + preferiti[1]['name']);
                     },
                     size: MediaQuery.of(context).size.width/4,
                     image: NetworkImage(preferiti[1]['image']),
@@ -248,6 +287,7 @@ class _MainPageState extends State<MainPage>{
                    CircleImageInkWell(
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(preferiti[2])));
+                      Flurry.logEvent("Click anime " + preferiti[2]['name']);
                     },
                     size: MediaQuery.of(context).size.width/4,
                     image: NetworkImage(preferiti[2]['image']),
@@ -286,6 +326,7 @@ class _MainPageState extends State<MainPage>{
         onChanged: (result) {
           if (result == SwipePosition.SwipeRight) {
             Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(an)));
+            Flurry.logEvent("Swipe random " + an['name']);
           } else {}
         },
       ),
@@ -296,8 +337,9 @@ class _MainPageState extends State<MainPage>{
   
   Widget elenco(String txt){
     return new GestureDetector(
-      onTap: (){
+      onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) => PreferitiPage()));
+        Flurry.logEvent("Click preferiti ");
       },
       child: new Container(
         height:50,
@@ -324,8 +366,9 @@ class _MainPageState extends State<MainPage>{
 
   Widget activity(){
     return new GestureDetector(
-        onTap: (){
+        onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => ActivityPage()));
+          Flurry.logEvent("Click activity ");
         },
         child: Container(
             width: MediaQuery.of(context).size.width,
@@ -385,8 +428,9 @@ class _MainPageState extends State<MainPage>{
                     activity(),
                     elenco("Preferiti"),
                     GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => ListPage()));
+                        Flurry.logEvent("Click list ");
                       },
                       child: new Container(
                         height:50,
@@ -456,8 +500,9 @@ class _MainPageState extends State<MainPage>{
                     activity(),
                     elenco("Preferiti"),
                     GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => ListPage()));
+                        Flurry.logEvent("Click list ");
                       },
                       child: new Container(
                         height:50,
@@ -497,8 +542,9 @@ class _MainPageState extends State<MainPage>{
   
   Widget semplificata(){
     return new GestureDetector(
-        onTap: (){
+        onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => SemplificataPage()));
+          Flurry.logEvent("Click semplificata ");
         },
         child: Container(
             width: MediaQuery.of(context).size.width,
@@ -509,8 +555,9 @@ class _MainPageState extends State<MainPage>{
   }
   Widget profilo(){
     return new GestureDetector(
-        onTap: (){
+        onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
+          Flurry.logEvent("Click login ");
         },
         child: Container(
             width: MediaQuery.of(context).size.width,
@@ -553,8 +600,9 @@ class _MainPageState extends State<MainPage>{
               child: new Text("OPPURE",textAlign:TextAlign.center,style: TextStyle(fontSize: 12.0,fontWeight: FontWeight.bold))
           ),
           GestureDetector(
-            onTap: (){
+            onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => SemplificataPage()));
+              Flurry.logEvent("Click semplificata ");
             },
             child: Container(
               width: MediaQuery.of(context).size.width,

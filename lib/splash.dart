@@ -8,7 +8,7 @@ class SplashPage extends StatefulWidget {
 }
 
 class SplashPageState extends State<SplashPage> {
-
+  
   @override
   Widget build(BuildContext context) {
     
