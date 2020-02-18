@@ -125,13 +125,6 @@ class _AnimePageState extends State<AnimePage> with UnityAdsListener{
       child:Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Divider(height: 2,color: Colors.black),
-          testo('Episodi'),
-          Container(
-            width: MediaQuery.of(context).size.width ,
-            height: 250,
-            child: gridView(this.anime),
-          ),
           GestureDetector(
             onTap: () async {
               var box = await Hive.openBox('animes');
@@ -151,7 +144,15 @@ class _AnimePageState extends State<AnimePage> with UnityAdsListener{
               width: MediaQuery.of(context).size.width,
               child:Text("Aggiungi ai preferiti",textAlign:TextAlign.right,style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold,color: Colors.blue[200]))
             ),
-          )
+          ),
+          Divider(height: 2,color: Colors.black),
+          testo('Episodi'),
+          Container(
+            width: MediaQuery.of(context).size.width ,
+            height: 230,
+            child: gridView(this.anime),
+          ),
+          
         ]
       )
     );
