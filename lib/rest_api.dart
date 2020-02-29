@@ -6,9 +6,34 @@ class URLS {
  static const String BASE_URL = 'http://otaku-world.space:3000';
 }
 
- 
-
 class ApiService {
+  static Future<dynamic> getMangas() async {
+    final response = await http.get('${URLS.BASE_URL}/manga/5be372f8719a160a9e36dbaa?all=1');
+    if (response.statusCode == 200) {
+      var jsonObj = json.decode(response.body);
+      return jsonObj;
+    } else {
+      return null;
+    }
+  }
+   static Future<dynamic> getCapitolo(String cap) async {
+    final response = await http.get('${URLS.BASE_URL}/manga/' + cap + '?capitolo=1');
+    if (response.statusCode == 200) {
+      var jsonObj = json.decode(response.body);
+      return jsonObj;
+    } else {
+      return null;
+    }
+  }
+  static Future<dynamic> getSingleManga(String id) async {
+    final response = await http.get('${URLS.BASE_URL}/manga/' + id + '?manga=1');
+    if (response.statusCode == 200) {
+      var jsonObj = json.decode(response.body);
+      return jsonObj;
+    } else {
+      return null;
+    }
+  }
   static Future<List> getAnimes() async {
     final response = await http.get('${URLS.BASE_URL}/world');
     if (response.statusCode == 200) {
