@@ -4,6 +4,7 @@ import 'package:flurry/flurry.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:unity_ads_flutter/unity_ads_flutter.dart';
 import 'activity.dart';
 import 'auth.dart';
 import 'listManga.dart';
@@ -45,15 +46,13 @@ class HomePageState extends State<HomePage> {
       return androidDeviceInfo.androidId; // unique ID on Android
     }
   }
+
   @override
-
   void initState() {
-
     super.initState();
-
     initFlurry();
-
   }
+
   @override
   Widget build(BuildContext context) {
     _fcm.configure(
@@ -101,7 +100,127 @@ class MainPage extends StatefulWidget {
 }
 
 
-class _MainPageState extends State<MainPage>{
+class _MainPageState extends State<MainPage> with UnityAdsListener{
+  String videoPlacementId='video';
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  String gameIdAndroid='3427627';
+  String gameIdIOS='3427626';
+  UnityAdsError _error;
+  String _errorMessage;
+  bool _ready;
+     @override
+  void onUnityAdsError(UnityAdsError error, String message) {
+    print('$error occurred: $message');
+    setState((){
+      this._error=error;
+      this._errorMessage=message;
+    });
+  }
+
+  @override
+  void onUnityAdsFinish(String placementId, FinishState result) {
+    print('Finished $placementId with $result');
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: new Container(
+            height: 150,
+            width:MediaQuery.of(context).size.width - 100,
+            margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ListMangaPage()));
+                    },
+                    child:  new Container(
+                      padding: const EdgeInsets.all(10.0),
+                      decoration: DecorationService.decBlue(),
+                      child:Center(
+                        child:Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child:  new Icon(Icons.view_carousel, size: 60.0),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text("MANGA"),
+                            )
+                          ],
+                        )
+                      )
+                    )
+                  ),
+                  new Text("O"),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ListPage()));
+                    },
+                    child:  new Container(
+                      padding: const EdgeInsets.all(10.0),
+                      decoration: DecorationService.decBlue(),
+                      child:Center(
+                        child:Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child:  new Icon(Icons.ondemand_video, size: 60.0),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text("ANIME"),
+                            )
+                          ],
+                        )
+                      )
+                    )
+                  ),
+                  
+                  
+                ],
+              ),
+            )
+          ),
+        );
+      }
+    );
+
+  }
+
+  @override
+  void onUnityAdsReady(String placementId) {
+    print('Ready: $placementId');
+    if (placementId == videoPlacementId){
+      setState(() {
+        this._ready=true;
+      });
+    }
+  }
+
+  @override
+  void onUnityAdsStart(String placementId) {
+    print('Start: $placementId');
+    if(placementId == videoPlacementId){
+      setState(() {
+        this._ready = false;
+      });
+    }
+  }
+   @override
+  void initState() {
+    super.initState();
+    UnityAdsFlutter.initialize(gameIdAndroid, gameIdIOS, this, true);
+    _ready = false;
+  }
   Widget evidenza(List cans) {
     return new CarouselSlider(
       height: 175.0,
@@ -228,7 +347,6 @@ class _MainPageState extends State<MainPage>{
       child:Text(txt,textAlign:TextAlign.left,style: TextStyle(fontSize: 25.0,fontWeight: FontWeight.bold))
     );
   }
-  
   Widget avanzata(){
     return new  GestureDetector(
       onTap: () {
@@ -430,43 +548,7 @@ class _MainPageState extends State<MainPage>{
                     elenco("Preferiti"),
                     GestureDetector(
                       onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              content: new Container(
-                                height: MediaQuery.of(context).size.height - 500,
-                                width:MediaQuery.of(context).size.width - 100,
-                                margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-                                child: Center(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: <Widget>[
-                                      new Icon(Icons.arrow_forward_ios),
-                                      new Icon(Icons.arrow_forward_ios)
-                                    ],
-                                  ),
-                                )
-                              ),
-                              actions: <Widget>[
-                                new FlatButton(
-                                  child: new Text("Anime"),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                                new FlatButton(
-                                  child: new Text("Manga"),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                        //Navigator.push(context, MaterialPageRoute(builder: (context) => ListPage()));
+                        UnityAdsFlutter.show('video');
                         Flurry.logEvent("Click list ");
                       },
                       child: new Container(
@@ -538,79 +620,7 @@ class _MainPageState extends State<MainPage>{
                     elenco("Preferiti"),
                     GestureDetector(
                       onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              content: new Container(
-                                height: 150,
-                                width:MediaQuery.of(context).size.width - 100,
-                                margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                                child: Center(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: <Widget>[
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) => ListMangaPage()));
-                                        },
-                                        child:  new Container(
-                                          padding: const EdgeInsets.all(10.0),
-                                          decoration: DecorationService.decBlue(),
-                                          child:Center(
-                                            child:Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                Padding(
-                                                  padding: const EdgeInsets.all(10.0),
-                                                  child:  new Icon(Icons.view_carousel, size: 60.0),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(10.0),
-                                                  child: Text("MANGA"),
-                                                )
-                                              ],
-                                            )
-                                          )
-                                        )
-                                      ),
-                                      new Text("O"),
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) => ListPage()));
-                                        },
-                                        child:  new Container(
-                                          padding: const EdgeInsets.all(10.0),
-                                          decoration: DecorationService.decBlue(),
-                                          child:Center(
-                                            child:Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                Padding(
-                                                  padding: const EdgeInsets.all(10.0),
-                                                  child:  new Icon(Icons.ondemand_video, size: 60.0),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(10.0),
-                                                  child: Text("ANIME"),
-                                                )
-                                              ],
-                                            )
-                                          )
-                                        )
-                                      ),
-                                      
-                                      
-                                    ],
-                                  ),
-                                )
-                              ),
-                            );
-                          },
-                        );
+                        UnityAdsFlutter.show('video');
                         Flurry.logEvent("Click list ");
                       },
                       child: new Container(

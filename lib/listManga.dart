@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'decoration.dart';
 import 'rest_api.dart';
-import 'anime.dart';
+import 'manga.dart';
 
 class ListMangaPage extends StatefulWidget {
   const ListMangaPage();
@@ -95,7 +95,7 @@ class _ListMangaPageState extends State<ListMangaPage> {
                 return Center(
                   child:GestureDetector(
                     onTap: (){
-                      //Navigator.push(context, MaterialPageRoute(builder: (context) => MangaPage(all[index]['i'])));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => MangaPage(all[index]['i'],all[index]['t'])));
                     },
                     child: Container(
                       decoration: DecorationService.decEvidenza(),
@@ -148,7 +148,7 @@ class _ListMangaPageState extends State<ListMangaPage> {
                   return Center(
                     child:GestureDetector(
                       onTap: (){
-                       // Navigator.push(context, MaterialPageRoute(builder: (context) => MangaPage(all[index]['i'])));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => MangaPage(all[index]['i'], all[index]['t'])));
                       },
                       child: Container(
                         decoration: DecorationService.decEvidenza(),

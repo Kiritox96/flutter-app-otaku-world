@@ -45,7 +45,7 @@ class _ActivityPageState extends State<ActivityPage> {
                             child: ListTile(
                              
                               title: Text(all[index]['anime']),
-                              subtitle: Text("Visto episodio N° " + (int.parse(all[index]['episodio']) + 1).toString() ),
+                              subtitle: Text("Episodio o Capitolo N° " + (int.parse(all[index]['episodio']) + 1).toString() ),
                             ),
                           ),
                         )
