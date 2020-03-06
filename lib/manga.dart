@@ -1,6 +1,7 @@
 import 'package:OtakuWorld/rest_api.dart';
 import 'package:connection_status_bar/connection_status_bar.dart';
 import 'package:flutter/material.dart';
+import 'capitolo.dart';
 import 'video.dart';
 import 'package:hive/hive.dart';
 import 'package:unity_ads_flutter/unity_ads_flutter.dart';
@@ -99,7 +100,7 @@ class _MangaPageState extends State<MangaPage> with UnityAdsListener{
   @override
   void onUnityAdsFinish(String placementId, FinishState result) {
     print('Finished $placementId with $result');
-   // Navigator.push(context, MaterialPageRoute(builder: (context) => CapitoloPage(this.link)));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => CapitoloPage(this.link)));
 
   }
 
@@ -130,7 +131,7 @@ class _MangaPageState extends State<MangaPage> with UnityAdsListener{
         children: [
          
           Divider(height: 2,color: Colors.black),
-          testo('Episodi'),
+          testo('Capitoli'),
           Container(
             width: MediaQuery.of(context).size.width ,
             height: 230,
@@ -156,7 +157,7 @@ class _MangaPageState extends State<MangaPage> with UnityAdsListener{
                 this.putActivity(activity);
                 setState((){
                   _ready=false;
-                  link = manga['chapters'][index][3].toString();
+                  link = manga['chapters'][manga['chapters'].length - index][3].toString();
                 });
                 UnityAdsFlutter.show('video');
               },

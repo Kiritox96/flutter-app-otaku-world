@@ -135,6 +135,7 @@ class _MainPageState extends State<MainPage> with UnityAdsListener{
                 children: <Widget>[
                   GestureDetector(
                     onTap: () {
+                      Navigator.of(context).pop();
                       Navigator.push(context, MaterialPageRoute(builder: (context) => ListMangaPage()));
                     },
                     child:  new Container(
@@ -161,6 +162,7 @@ class _MainPageState extends State<MainPage> with UnityAdsListener{
                   new Text("O"),
                   GestureDetector(
                     onTap: () {
+                      Navigator.of(context).pop();
                       Navigator.push(context, MaterialPageRoute(builder: (context) => ListPage()));
                     },
                     child:  new Container(

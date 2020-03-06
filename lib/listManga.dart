@@ -148,7 +148,7 @@ class _ListMangaPageState extends State<ListMangaPage> {
                   return Center(
                     child:GestureDetector(
                       onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => MangaPage(all[index]['i'], all[index]['t'])));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => MangaPage(all2[index]['i'], all2[index]['t'])));
                       },
                       child: Container(
                         decoration: DecorationService.decEvidenza(),
