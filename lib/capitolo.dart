@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:story_view/story_view.dart';
 
 import 'rest_api.dart';
+import 'story_view.dart';
 class CapitoloPage extends StatefulWidget {
   final String id;
   
@@ -33,12 +32,17 @@ class _CapitoloPageState extends State<CapitoloPage> {
             List caps = snapshot.data[0]['images'];
             print(caps);
             List<StoryItem> capitoli = [];
-            caps.forEach((cap) => capitoli.add(
-              StoryItem.pageImage(
-                NetworkImage('https://cdn.mangaeden.com/mangasimg/' + cap[1]),
-                caption: 'Pagina N°' + (caps.length-cap[0]).toString(),
+            
+            caps.forEach((cap) => {
+              
+              
+              capitoli.add(
+                StoryItem.pageImage(
+                  NetworkImage('https://cdn.mangaeden.com/mangasimg/' + cap[1]),
+                  caption: 'Pagina N°' + (caps.length-cap[0]).toString()
+                )
               )
-            ));
+            });
             return new  Container(
               margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
               decoration: BoxDecoration(color: Colors.black),

@@ -175,7 +175,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_cache_manager:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_cache_manager
       url: "https://pub.dartlang.org"
@@ -367,7 +367,7 @@ packages:
     source: hosted
     version: "2.0.5"
   rxdart:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: rxdart
       url: "https://pub.dartlang.org"
@@ -406,13 +406,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.9.3"
-  story_view:
-    dependency: "direct main"
-    description:
-      name: story_view
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.11.2"
   stream_channel:
     dependency: transitive
     description:
@@ -484,7 +477,7 @@ packages:
     source: hosted
     version: "2.0.8"
   video_player:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: video_player
       url: "https://pub.dartlang.org"
