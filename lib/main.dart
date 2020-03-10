@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:catcher/catcher_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
@@ -9,13 +8,6 @@ import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // need to be the first line in main method
-    
-  CatcherOptions debugOptions = CatcherOptions(DialogReportMode(), [ConsoleHandler()]);
-  CatcherOptions releaseOptions = CatcherOptions(DialogReportMode(), [
-    EmailManualHandler(["otaku.world@outlook.it"])
-  ]);
-  Catcher(MyApp(), debugConfig: debugOptions, releaseConfig: releaseOptions);
- 
   Directory appDocDir = await getApplicationDocumentsDirectory();
   Hive.init(appDocDir.path);
   runApp(MyApp());
