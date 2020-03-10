@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'rest_api.dart';
 import 'story_view.dart';
 class CapitoloPage extends StatefulWidget {
@@ -20,7 +19,6 @@ class _CapitoloPageState extends State<CapitoloPage> {
   
   @override
   Widget build(BuildContext context) {
-    
     return new Scaffold(
       appBar: AppBar(
         title: Text("Indietro"),
@@ -39,7 +37,7 @@ class _CapitoloPageState extends State<CapitoloPage> {
               capitoli.add(
                 StoryItem.pageImage(
                   NetworkImage('https://cdn.mangaeden.com/mangasimg/' + cap[1]),
-                  caption: 'Pagina N°' + (caps.length-cap[0]).toString()
+                  caption: 'Pagina N°' + (cap[0]+1).toString()
                 )
               )
             });
@@ -48,13 +46,14 @@ class _CapitoloPageState extends State<CapitoloPage> {
               decoration: BoxDecoration(color: Colors.black),
               height: MediaQuery.of(context).size.height,
               child: StoryView(
-                capitoli,
+                capitoli.reversed.toList(),
                 onStoryShow: (s) {print("Showing a story");},
                 onComplete: () {print("Completed a cycle");},
                 progressPosition: ProgressPosition.bottom,
                 repeat: false,
                 inline: true,
               )
+              
             );
           } else {
             return Center(
