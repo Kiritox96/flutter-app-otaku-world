@@ -100,129 +100,9 @@ class MainPage extends StatefulWidget {
 }
 
 
-class _MainPageState extends State<MainPage> with UnityAdsListener{
-  String videoPlacementId='video';
+class _MainPageState extends State<MainPage>{
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  String gameIdAndroid='3427627';
-  String gameIdIOS='3427626';
-  UnityAdsError _error;
-  String _errorMessage;
-  bool _ready;
-     @override
-  void onUnityAdsError(UnityAdsError error, String message) {
-    print('$error occurred: $message');
-    setState((){
-      this._error=error;
-      this._errorMessage=message;
-    });
-  }
-
-  @override
-  void onUnityAdsFinish(String placementId, FinishState result) {
-    print('Finished $placementId with $result');
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: new Container(
-            height: 150,
-            width:MediaQuery.of(context).size.width - 100,
-            margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ListMangaPage()));
-                    },
-                    child:  new Container(
-                      padding: const EdgeInsets.all(10.0),
-                      decoration: DecorationService.decBlue(),
-                      child:Center(
-                        child:Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child:  new Icon(Icons.view_carousel, size: 60.0),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text("MANGA"),
-                            )
-                          ],
-                        )
-                      )
-                    )
-                  ),
-                  new Text("O"),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ListPage()));
-                    },
-                    child:  new Container(
-                      padding: const EdgeInsets.all(10.0),
-                      decoration: DecorationService.decBlue(),
-                      child:Center(
-                        child:Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child:  new Icon(Icons.ondemand_video, size: 60.0),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text("ANIME"),
-                            )
-                          ],
-                        )
-                      )
-                    )
-                  ),
-                  
-                  
-                ],
-              ),
-            )
-          ),
-        );
-      }
-    );
-
-  }
-
-  @override
-  void onUnityAdsReady(String placementId) {
-    print('Ready: $placementId');
-    if (placementId == videoPlacementId){
-      setState(() {
-        this._ready=true;
-      });
-    }
-  }
-
-  @override
-  void onUnityAdsStart(String placementId) {
-    print('Start: $placementId');
-    if(placementId == videoPlacementId){
-      setState(() {
-        this._ready = false;
-      });
-    }
-  }
-   @override
-  void initState() {
-    super.initState();
-    UnityAdsFlutter.initialize(gameIdAndroid, gameIdIOS, this, true);
-    _ready = false;
-  }
+ 
   Widget evidenza(List cans) {
     return new CarouselSlider(
       height: 175.0,
@@ -233,7 +113,6 @@ class _MainPageState extends State<MainPage> with UnityAdsListener{
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(i)));
                 Flurry.logEvent("Click anime " + i['name']);
-
               },
               child: Container(
                 decoration: DecorationService.decEvidenza(),
@@ -270,7 +149,6 @@ class _MainPageState extends State<MainPage> with UnityAdsListener{
                     ))
                   ]
                 )
-
               )
             );
           },
@@ -302,7 +180,6 @@ class _MainPageState extends State<MainPage> with UnityAdsListener{
                     onTap: ()  {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(val[0])));
                       Flurry.logEvent("Click anime " + val[0]['name']);
-
                     },
                     child: Container(
                       width: MediaQuery.of(context).size.width / 4.5,
@@ -434,13 +311,7 @@ class _MainPageState extends State<MainPage> with UnityAdsListener{
         thumb: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Align(
-                widthFactor: 0.90,
-                child: Icon(
-                  Icons.chevron_right,
-                  size: 60.0,
-                  color: Colors.white,
-                )),
+            Align(widthFactor: 0.90,child: Icon(Icons.chevron_right,size: 60.0,color: Colors.white)),
           ],
         ),
         content: Center(child: Text("RANDOM",style: TextStyle(color: Colors.white,fontSize: 25.0,fontWeight: FontWeight.bold))),
@@ -498,31 +369,17 @@ class _MainPageState extends State<MainPage> with UnityAdsListener{
         )
     );
   }
-  Future<List<dynamic>> getEvidenza() async {
-    var box = await Hive.openBox('evidenza');
-    return box.values.toList()[0];
-  }
-   Future<List<dynamic>> getSuggeriti() async {
-    var box = await Hive.openBox('suggeriti');
-    return box.values.toList()[0];
-  }
-   Future<dynamic> getFirst() async {
-    var box = await Hive.openBox('first');
-    return box.values.toList();
-  }
   
   Widget albero(){
     return new FutureBuilder(
-        future: Future.wait([this.getPreferiti(), ApiService.getAnimeEvidenza(), ApiService.getAnimeSuggeriti()]),
+        future: Future.wait([this.getPreferiti(), ApiService.getAnimeEvidenza(), ApiService.getAnimeSuggeriti(), ApiService.randomAnime()]),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List pref = snapshot.data[0];
 
             List ev = snapshot.data[1];
-            this.putEvidenza(ev);
             List sug = snapshot.data[2];
-            this.putSuggeriti(sug);
-            this.putFirst();
+            dynamic ran = snapshot.data[3];
             return new SingleChildScrollView(
               child: new ConstrainedBox(
                 constraints: new BoxConstraints(),
@@ -550,79 +407,81 @@ class _MainPageState extends State<MainPage> with UnityAdsListener{
                     elenco("Preferiti"),
                     GestureDetector(
                       onTap: () {
-                        UnityAdsFlutter.show('video');
-                        Flurry.logEvent("Click list ");
-                      },
-                      child: new Container(
-                        height:50,
-                        decoration: DecorationService.decEvidenza(),
-                        width: MediaQuery.of(context).size.width,
-                        margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          mainAxisSize: MainAxisSize.max,
-                          children:[
-                            Container(
-                              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-                              child: new Text("Archivio anime",style: TextStyle(fontSize: 25.0,fontWeight: FontWeight.bold))
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-                              child: new Icon(Icons.arrow_forward_ios)
-                            )
-                          ]
-                        )
-                      )
-                    ),
-                    //avanzata(),
-                    //swipe(ran),
-                    semplificata()
-                  ]
-                )
-              )
-            );
-          }
-          return waiting();
-        }
-    );
-  }
-  Widget alberoDopo(){
-    return new FutureBuilder(
-        future: Future.wait([this.getPreferiti(), this.getEvidenza(), this.getSuggeriti(),ApiService.randomAnime()]),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List pref = snapshot.data[0];
-
-            List ev = snapshot.data[1];
-            
-            List sug = snapshot.data[2];
-            
-            dynamic ran = snapshot.data[3];
-            return new SingleChildScrollView(
-              child: new ConstrainedBox(
-                constraints: new BoxConstraints(),
-                child: new Column(
-                  children: [
-                    ConnectionStatusBar(),
-                    Container(
-                      margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 0, bottom: 0),
-                      width: MediaQuery.of(context).size.width,
-                      color: Color(0x060606),
-                      height: 250,
-                      child:Image.asset("logo.png"),
-                    ),
-                    profilo(),
-                    Divider(height: 2, color: Colors.black),
-                    preferiti(pref),
-                    testo('In evidenza'),
-                    evidenza(ev),
-                    testo('Suggeriti'),
-                    suggeriti(sug),
-                    activity(),
-                    elenco("Preferiti"),
-                    GestureDetector(
-                      onTap: () {
-                        UnityAdsFlutter.show('video');
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              content: new Container(
+                                height: 150,
+                                width:MediaQuery.of(context).size.width - 100,
+                                margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                                child: Center(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: <Widget>[
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).pop();
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => ListMangaPage()));
+                                        },
+                                        child:  new Container(
+                                          padding: const EdgeInsets.all(10.0),
+                                          decoration: DecorationService.decBlue(),
+                                          child:Center(
+                                            child:Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding: const EdgeInsets.all(10.0),
+                                                  child:  new Icon(Icons.view_carousel, size: 60.0),
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(10.0),
+                                                  child: Text("MANGA"),
+                                                )
+                                              ],
+                                            )
+                                          )
+                                        )
+                                      ),
+                                      new Text("O"),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).pop();
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => ListPage()));
+                                        },
+                                        child:  new Container(
+                                          padding: const EdgeInsets.all(10.0),
+                                          decoration: DecorationService.decBlue(),
+                                          child:Center(
+                                            child:Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding: const EdgeInsets.all(10.0),
+                                                  child:  new Icon(Icons.ondemand_video, size: 60.0),
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(10.0),
+                                                  child: Text("ANIME"),
+                                                )
+                                              ],
+                                            )
+                                          )
+                                        )
+                                      ),
+                                      
+                                      
+                                    ],
+                                  ),
+                                )
+                              ),
+                            );
+                          }
+                        );
                         Flurry.logEvent("Click list ");
                       },
                       child: new Container(
@@ -659,6 +518,7 @@ class _MainPageState extends State<MainPage> with UnityAdsListener{
     );
   }
   
+  
  
   
   Widget semplificata(){
@@ -686,10 +546,6 @@ class _MainPageState extends State<MainPage> with UnityAdsListener{
             child: new Text("Vai alle funzioni cloud",textAlign:TextAlign.right,style: TextStyle(color:Colors.blueAccent,fontSize: 18.0,fontWeight: FontWeight.bold))
         )
     );
-  }
-  void putFirst() async {
-    var box = await Hive.openBox('first');
-    box.add(true);
   }
   void putEvidenza(List ev) async {
     var box = await Hive.openBox('evidenza');
@@ -738,27 +594,6 @@ class _MainPageState extends State<MainPage> with UnityAdsListener{
 
   @override
   Widget build(BuildContext context) {
-    
-    return new FutureBuilder(
-        future: Future.wait([this.getFirst()]),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            bool val = false;
-            List<dynamic> first = snapshot.data[0];
-            if(first.isNotEmpty){
-              val = true;
-            }
-            print(val);
-            if(!val){
-              return albero();
-            }
-            else{
-              return alberoDopo();
-            }
-          }
-          return albero();
-        }
-      
-    );
+    return albero();
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:unity_ads_flutter/unity_ads_flutter.dart';
 import 'decoration.dart';
 import 'rest_api.dart';
 import 'anime.dart';
@@ -10,25 +11,68 @@ class ListPage extends StatefulWidget {
   _ListPageState createState() => new _ListPageState();
 }
 
-class _ListPageState extends State<ListPage> {
-  
+class _ListPageState extends State<ListPage> with UnityAdsListener {
+ 
+  bool _ready;
+  String videoPlacementId='video';
+  String gameIdAndroid='3427627';
+  String gameIdIOS='3427626';
+  dynamic link;
   static final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   TextEditingController _searchQuery;
   bool _isSearching = false;
   String searchQuery = ""; // '$searchQuery' è la nostra variabile
+  @override
+  initState() {
+    UnityAdsFlutter.initialize(gameIdAndroid, gameIdIOS, this, true);
+    _ready = false;
+    super.initState();
+  }
+   @override
+  void onUnityAdsError(UnityAdsError error, String message) {
+    print('$error occurred: $message');
+  }
 
+  @override
+  void onUnityAdsFinish(String placementId, FinishState result) {
+    print('Finished $placementId with $result');
+    Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(this.link)));
+    setState(() {
+      _ready = false;
+    });
+  }
+
+  @override
+  void onUnityAdsReady(String placementId) {
+    print('Ready: $placementId');
+    if (placementId == videoPlacementId){
+      setState(() {
+        _ready=true;
+      });
+    }
+  }
+
+  @override
+  void onUnityAdsStart(String placementId) {
+    print('Start: $placementId');
+    if(placementId == videoPlacementId){
+      setState(() {
+        _ready = false;
+      });
+    }
+  }
   void _stopSearching() {
-    this.setState(() {
-      this._isSearching = false;
+    setState(() {
+      _isSearching = false;
     });
   }
   void updateSearchQuery(String newQuery) {
-    this.setState(() {
-      this.searchQuery = newQuery;
+    setState(() {
+      searchQuery = newQuery;
     });
   }
   void _startSearch() {
-    this.setState(() {
+    setState(() {
       _isSearching = true;
     });
   }
@@ -93,7 +137,15 @@ class _ListPageState extends State<ListPage> {
                 return Center(
                   child:GestureDetector(
                     onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(all[index])));
+                      print(this._ready);
+                      if(this._ready){
+                        UnityAdsFlutter.show('video');
+                        setState(() {
+                          link = all[index];
+                        });
+                      } else {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(all[index])));
+                      }
                     },
                     child: Container(
                       decoration: DecorationService.decEvidenza(),

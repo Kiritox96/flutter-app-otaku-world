@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:unity_ads_flutter/unity_ads_flutter.dart';
 import 'decoration.dart';
 import 'rest_api.dart';
 import 'manga.dart';
@@ -10,13 +11,18 @@ class ListMangaPage extends StatefulWidget {
   _ListMangaPageState createState() => new _ListMangaPageState();
 }
 
-class _ListMangaPageState extends State<ListMangaPage> {
+class _ListMangaPageState extends State<ListMangaPage> with UnityAdsListener{
   
   static final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   TextEditingController _searchQuery;
   bool _isSearching = false;
   String searchQuery = ""; // '$searchQuery' è la nostra variabile
 
+  String videoPlacementId='video';
+  String gameIdAndroid='3427627';
+  String gameIdIOS='3427626';
+  dynamic link;
+  dynamic link2;
   void _stopSearching() {
     this.setState(() {
       this._isSearching = false;
@@ -31,6 +37,32 @@ class _ListMangaPageState extends State<ListMangaPage> {
     this.setState(() {
       _isSearching = true;
     });
+  }
+   @override
+  initState() {
+    UnityAdsFlutter.initialize(gameIdAndroid, gameIdIOS, this, true);
+    super.initState();
+  }
+  @override
+  void onUnityAdsError(UnityAdsError error, String message) {
+    print('$error occurred: $message');
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MangaPage(link,link2)));
+  }
+
+  @override
+  void onUnityAdsFinish(String placementId, FinishState result) {
+    print('Finished $placementId with $result');
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MangaPage(link,link2)));
+  }
+
+  @override
+  void onUnityAdsReady(String placementId) {
+    print('Ready: $placementId');
+  }
+
+  @override
+  void onUnityAdsStart(String placementId) {
+    print('Start: $placementId');
   }
   List<Widget> _buildActions() {
     if (_isSearching) {
@@ -95,7 +127,12 @@ class _ListMangaPageState extends State<ListMangaPage> {
                 return Center(
                   child:GestureDetector(
                     onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => MangaPage(all[index]['i'],all[index]['t'])));
+                      setState((){
+                        link = all[index]['i'];
+                        link2 = all[index]['t'];
+                      });
+                      UnityAdsFlutter.show('video');
+                      
                     },
                     child: Container(
                       decoration: DecorationService.decEvidenza(),
