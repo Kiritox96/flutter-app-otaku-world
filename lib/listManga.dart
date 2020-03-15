@@ -43,10 +43,9 @@ class _ListMangaPageState extends State<ListMangaPage> with UnityAdsListener{
    @override
   initState() {
     UnityAdsFlutter.initialize(gameIdAndroid, gameIdIOS, this, true);
-    this.tim = 15;
-    timer = Timer.periodic(Duration(seconds: this.tim), (Timer t) => {
-      setState(()=>this.tim = this.tim +30),
-      print(this.tim),
+    UnityAdsFlutter.show('video');
+
+    timer = Timer.periodic(Duration(seconds: 45), (Timer t) => {
       UnityAdsFlutter.show('video')
     });
     super.initState();
