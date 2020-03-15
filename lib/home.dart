@@ -28,7 +28,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   final FirebaseMessaging _fcm = FirebaseMessaging();
-   Future<void> initFlurry() async {
+  Future<void> initFlurry() async {
 
     await Flurry.initialize(androidKey: "3926DZDM6WKBK73SCS48", iosKey: "6GD25QCHX74HKWKP7RQT", enableLog: true);
     String id = await _getId();
@@ -390,10 +390,11 @@ class _MainPageState extends State<MainPage>{
                       margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 0, bottom: 0),
                       width: MediaQuery.of(context).size.width,
                       color: Color(0x060606),
-                      height: 210,
+                      height: 270,
                       child:Column(
                         children:[
                           Image.asset("logo.png"),
+                          profilo(),
                           Divider(height: 2, color: Colors.black)
                         ]
                       )
@@ -495,7 +496,7 @@ class _MainPageState extends State<MainPage>{
                           children:[
                             Container(
                               margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-                              child: new Text("Archivio",style: TextStyle(fontSize: 25.0,fontWeight: FontWeight.bold))
+                              child: new Text("Anime & Manga",style: TextStyle(fontSize: 25.0,fontWeight: FontWeight.bold))
                             ),
                             Container(
                               margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:unity_ads_flutter/unity_ads_flutter.dart';
@@ -12,20 +13,24 @@ class ListPage extends StatefulWidget {
 }
 
 class _ListPageState extends State<ListPage> with UnityAdsListener {
- 
-  bool _ready;
+  Timer timer;
   String videoPlacementId='video';
   String gameIdAndroid='3427627';
   String gameIdIOS='3427626';
-  dynamic link;
   static final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   TextEditingController _searchQuery;
   bool _isSearching = false;
+  int tim;
   String searchQuery = ""; // '$searchQuery' è la nostra variabile
   @override
   initState() {
     UnityAdsFlutter.initialize(gameIdAndroid, gameIdIOS, this, true);
-    _ready = false;
+    this.tim = 15;
+    timer = Timer.periodic(Duration(seconds: this.tim), (Timer t) =>{
+      setState(()=>this.tim = this.tim +30),
+      print(this.tim),
+      UnityAdsFlutter.show('video')
+    });
     super.initState();
   }
    @override
@@ -36,30 +41,16 @@ class _ListPageState extends State<ListPage> with UnityAdsListener {
   @override
   void onUnityAdsFinish(String placementId, FinishState result) {
     print('Finished $placementId with $result');
-    Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(this.link)));
-    setState(() {
-      _ready = false;
-    });
   }
 
   @override
   void onUnityAdsReady(String placementId) {
     print('Ready: $placementId');
-    if (placementId == videoPlacementId){
-      setState(() {
-        _ready=true;
-      });
-    }
   }
 
   @override
   void onUnityAdsStart(String placementId) {
     print('Start: $placementId');
-    if(placementId == videoPlacementId){
-      setState(() {
-        _ready = false;
-      });
-    }
   }
   void _stopSearching() {
     setState(() {
@@ -123,6 +114,11 @@ class _ListPageState extends State<ListPage> with UnityAdsListener {
       onChanged: updateSearchQuery,
     );
   }
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
 
   Widget all(){
     if(this._isSearching ==false){
@@ -136,16 +132,9 @@ class _ListPageState extends State<ListPage> with UnityAdsListener {
               children: List.generate(all.length, (index) {
                 return Center(
                   child:GestureDetector(
-                    onTap: (){
-                      print(this._ready);
-                      if(this._ready){
-                        UnityAdsFlutter.show('video');
-                        setState(() {
-                          link = all[index];
-                        });
-                      } else {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(all[index])));
-                      }
+                    onTap: (){                      
+                      timer?.cancel();
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnimePage(all[index])));
                     },
                     child: Container(
                       decoration: DecorationService.decEvidenza(),

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:unity_ads_flutter/unity_ads_flutter.dart';
@@ -12,7 +13,7 @@ class ListMangaPage extends StatefulWidget {
 }
 
 class _ListMangaPageState extends State<ListMangaPage> with UnityAdsListener{
-  
+  Timer timer;
   static final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   TextEditingController _searchQuery;
   bool _isSearching = false;
@@ -23,36 +24,41 @@ class _ListMangaPageState extends State<ListMangaPage> with UnityAdsListener{
   String gameIdIOS='3427626';
   dynamic link;
   dynamic link2;
+  int tim;
   void _stopSearching() {
-    this.setState(() {
-      this._isSearching = false;
+    setState(() {
+      _isSearching = false;
     });
   }
   void updateSearchQuery(String newQuery) {
-    this.setState(() {
-      this.searchQuery = newQuery;
+    setState(() {
+      searchQuery = newQuery;
     });
   }
   void _startSearch() {
-    this.setState(() {
+    setState(() {
       _isSearching = true;
     });
   }
    @override
   initState() {
     UnityAdsFlutter.initialize(gameIdAndroid, gameIdIOS, this, true);
+    this.tim = 15;
+    timer = Timer.periodic(Duration(seconds: this.tim), (Timer t) => {
+      setState(()=>this.tim = this.tim +30),
+      print(this.tim),
+      UnityAdsFlutter.show('video')
+    });
     super.initState();
   }
   @override
   void onUnityAdsError(UnityAdsError error, String message) {
     print('$error occurred: $message');
-    Navigator.push(context, MaterialPageRoute(builder: (context) => MangaPage(link,link2)));
   }
 
   @override
   void onUnityAdsFinish(String placementId, FinishState result) {
     print('Finished $placementId with $result');
-    Navigator.push(context, MaterialPageRoute(builder: (context) => MangaPage(link,link2)));
   }
 
   @override
@@ -111,6 +117,11 @@ class _ListMangaPageState extends State<ListMangaPage> with UnityAdsListener{
       onChanged: updateSearchQuery,
     );
   }
+   @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
 
   Widget all(){
     if(this._isSearching ==false){
@@ -127,12 +138,8 @@ class _ListMangaPageState extends State<ListMangaPage> with UnityAdsListener{
                 return Center(
                   child:GestureDetector(
                     onTap: (){
-                      setState((){
-                        link = all[index]['i'];
-                        link2 = all[index]['t'];
-                      });
-                      UnityAdsFlutter.show('video');
-                      
+                      timer?.cancel();
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => MangaPage(all[index]['i'], all[index]['t'])));
                     },
                     child: Container(
                       decoration: DecorationService.decEvidenza(),
