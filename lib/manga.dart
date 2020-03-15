@@ -157,12 +157,12 @@ class _MangaPageState extends State<MangaPage> with UnityAdsListener{
                 this.putActivity(activity);
                 setState((){
                   _ready=false;
-                  link = manga['chapters'][manga['chapters'].length - index - 1 ][3].toString();
+                  link = manga['chapters'][manga['chapters'].length - index][3].toString();
                 });
                 UnityAdsFlutter.show('video');
               },
               child: Container(
-                child: Text((manga['chapters'][manga['chapters'].length - index - 1 ][0]).toString(),style: TextStyle(
+                child: Text((manga['chapters'][manga['chapters'].length - index][0]).toString(),style: TextStyle(
                   color: activity.where((v)=>v['anime']==manga['title']).where((c)=>c['episodio'] == index.toString()).length > 0 ? Colors.red : Colors.black, 
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold
