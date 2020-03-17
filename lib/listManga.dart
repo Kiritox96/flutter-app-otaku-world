@@ -13,7 +13,6 @@ class ListMangaPage extends StatefulWidget {
 }
 
 class _ListMangaPageState extends State<ListMangaPage> with UnityAdsListener{
-  Timer timer;
   static final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   TextEditingController _searchQuery;
   bool _isSearching = false;
@@ -24,7 +23,6 @@ class _ListMangaPageState extends State<ListMangaPage> with UnityAdsListener{
   String gameIdIOS='3427626';
   dynamic link;
   dynamic link2;
-  int tim;
   void _stopSearching() {
     setState(() {
       _isSearching = false;
@@ -44,10 +42,6 @@ class _ListMangaPageState extends State<ListMangaPage> with UnityAdsListener{
   initState() {
     UnityAdsFlutter.initialize(gameIdAndroid, gameIdIOS, this, true);
     UnityAdsFlutter.show('video');
-
-    timer = Timer.periodic(Duration(seconds: 45), (Timer t) => {
-      UnityAdsFlutter.show('video')
-    });
     super.initState();
   }
   @override
@@ -116,11 +110,6 @@ class _ListMangaPageState extends State<ListMangaPage> with UnityAdsListener{
       onChanged: updateSearchQuery,
     );
   }
-   @override
-  void dispose() {
-    timer?.cancel();
-    super.dispose();
-  }
 
   Widget all(){
     if(this._isSearching ==false){
@@ -137,7 +126,6 @@ class _ListMangaPageState extends State<ListMangaPage> with UnityAdsListener{
                 return Center(
                   child:GestureDetector(
                     onTap: (){
-                      timer?.cancel();
                       Navigator.push(context, MaterialPageRoute(builder: (context) => MangaPage(all[index]['i'], all[index]['t'])));
                     },
                     child: Container(
