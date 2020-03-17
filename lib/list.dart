@@ -23,7 +23,9 @@ class _ListPageState extends State<ListPage> with UnityAdsListener {
   @override
   initState() {
     UnityAdsFlutter.initialize(gameIdAndroid, gameIdIOS, this, true);
-    UnityAdsFlutter.show('video');
+    Timer(Duration(seconds: 10), () {
+      UnityAdsFlutter.show('video');
+    });    
     super.initState();
   }
    @override
