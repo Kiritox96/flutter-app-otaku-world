@@ -4,11 +4,9 @@ import 'package:flurry/flurry.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:unity_ads_flutter/unity_ads_flutter.dart';
 import 'activity.dart';
 import 'auth.dart';
 import 'listManga.dart';
-import 'ricerca.dart';
 import 'package:hive/hive.dart';
 import 'package:image_ink_well/image_ink_well.dart';
 import 'anime.dart';
@@ -16,9 +14,6 @@ import 'decoration.dart';
 import 'preferiti.dart';
 import 'rest_api.dart';
 import 'list.dart';
-import 'SemplificataPage.dart';
-import 'package:connection_status_bar/connection_status_bar.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'swipe.dart';
 
 class HomePage extends StatefulWidget {
@@ -27,7 +22,6 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  final FirebaseMessaging _fcm = FirebaseMessaging();
   Future<void> initFlurry() async {
 
     await Flurry.initialize(androidKey: "3926DZDM6WKBK73SCS48", iosKey: "6GD25QCHX74HKWKP7RQT", enableLog: true);
@@ -55,34 +49,6 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    _fcm.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            content: ListTile(
-              title: Text(message['notification']['title']),
-              subtitle: Text(message['notification']['body']),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Ok'),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
-          ),
-        );
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-          print("onLaunch: $message");
-          // TODO optional
-      },
-      onResume: (Map<String, dynamic> message) async {
-          print("onResume: $message");
-          // TODO optional
-      },
-    );
     return new Scaffold(
       extendBody: true,
       backgroundColor: Colors.white,
@@ -226,19 +192,7 @@ class _MainPageState extends State<MainPage>{
       child:Text(txt,textAlign:TextAlign.left,style: TextStyle(fontSize: 25.0,fontWeight: FontWeight.bold))
     );
   }
-  Widget avanzata(){
-    return new  GestureDetector(
-      onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => RicercaPage()));
-        Flurry.logEvent("Click ricerca");
-      },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-        child: new Text("Ricerca avanzata",textAlign:TextAlign.right,style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold))
-      )
-    );
-  }
+ 
   Future<List<dynamic>> getPreferiti() async {
     var box = await Hive.openBox('animes');
     return box.values.toList();
@@ -385,7 +339,6 @@ class _MainPageState extends State<MainPage>{
                 constraints: new BoxConstraints(),
                 child: new Column(
                   children: [
-                    ConnectionStatusBar(),
                     Container(
                       margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 0, bottom: 0),
                       width: MediaQuery.of(context).size.width,
@@ -508,7 +461,6 @@ class _MainPageState extends State<MainPage>{
                     ),
                     //avanzata(),
                     swipe(ran),
-                    semplificata()
                   ]
                 )
               )
@@ -519,22 +471,6 @@ class _MainPageState extends State<MainPage>{
     );
   }
   
-  
- 
-  
-  Widget semplificata(){
-    return new GestureDetector(
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => SemplificataPage()));
-          Flurry.logEvent("Click semplificata ");
-        },
-        child: Container(
-            width: MediaQuery.of(context).size.width,
-            margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 20.0, bottom: 20.0),
-            child: new Text("Passa alla versione semplificata",textAlign:TextAlign.center,style: TextStyle(color:Colors.blueAccent,fontSize: 18.0,fontWeight: FontWeight.bold))
-        )
-    );
-  }
   Widget profilo(){
     return new GestureDetector(
         onTap: () {
@@ -571,22 +507,6 @@ class _MainPageState extends State<MainPage>{
               width: MediaQuery.of(context).size.width,
               margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 20.0, bottom: 20.0),
               child: new Text("Consigliamo di passare alla connessione WiFi",textAlign:TextAlign.center,style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold))
-          ),
-          Container(
-              width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 20.0, bottom: 20.0),
-              child: new Text("OPPURE",textAlign:TextAlign.center,style: TextStyle(fontSize: 12.0,fontWeight: FontWeight.bold))
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => SemplificataPage()));
-              Flurry.logEvent("Click semplificata ");
-            },
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 20.0, bottom: 0),
-              child: new Text("Passa alla versione semplificata",textAlign:TextAlign.center,style: TextStyle(color:Colors.blueAccent,fontSize: 18.0,fontWeight: FontWeight.bold))
-            )
           ),
         ]
       )

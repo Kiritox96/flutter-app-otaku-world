@@ -1,5 +1,4 @@
 import 'package:OtakuWorld/rest_api.dart';
-import 'package:connection_status_bar/connection_status_bar.dart';
 import 'package:flutter/material.dart';
 import 'capitolo.dart';
 import 'package:hive/hive.dart';
@@ -197,7 +196,6 @@ class _MangaPageState extends State<MangaPage> with UnityAdsListener{
                 height: MediaQuery.of(context).size.height,
                 child: Column(    
                   children: [
-                    ConnectionStatusBar(),
                     Container(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
