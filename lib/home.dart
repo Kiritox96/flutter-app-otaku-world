@@ -8,6 +8,7 @@ import 'package:unity_ads_flutter/unity_ads_flutter.dart';
 import 'activity.dart';
 import 'auth.dart';
 import 'listManga.dart';
+import 'listMangaEngPage.dart';
 import 'ricerca.dart';
 import 'package:hive/hive.dart';
 import 'package:image_ink_well/image_ink_well.dart';
@@ -421,61 +422,82 @@ class _MainPageState extends State<MainPage>{
                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                                     mainAxisSize: MainAxisSize.max,
                                     children: <Widget>[
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.of(context).pop();
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) => ListMangaPage()));
-                                        },
-                                        child:  new Container(
-                                          padding: const EdgeInsets.all(10.0),
-                                          decoration: DecorationService.decBlue(),
-                                          child:Center(
-                                            child:Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                Padding(
-                                                  padding: const EdgeInsets.all(10.0),
-                                                  child:  new Icon(Icons.view_carousel, size: 60.0),
+                                      new Container(
+                                        padding: const EdgeInsets.all(1.0),
+                                        child:Center(
+                                          child:Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: const EdgeInsets.all(1.0),
+                                                child:  new Icon(Icons.view_carousel, size: 40.0),
+                                              ),
+                                              FlatButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  Navigator.push(context, MaterialPageRoute(builder: (context) => ListMangaPage()));
+                                                },
+                                                color: Colors.blue,
+                                                textColor: Colors.white,
+                                                disabledColor: Colors.grey,
+                                                disabledTextColor: Colors.black,
+                                                padding: EdgeInsets.all(8.0),
+                                                splashColor: Colors.blueAccent,
+                                                child: Text(
+                                                  "MANGA ITA",
                                                 ),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(10.0),
-                                                  child: Text("MANGA"),
-                                                )
-                                              ],
-                                            )
+                                              ),
+                                              FlatButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  Navigator.push(context, MaterialPageRoute(builder: (context) => ListMangaEngPage()));
+                                                },
+                                                color: Colors.blue,
+                                                textColor: Colors.white,
+                                                disabledColor: Colors.grey,
+                                                disabledTextColor: Colors.black,
+                                                padding: EdgeInsets.all(8.0),
+                                                splashColor: Colors.blueAccent,
+                                                child: Text(
+                                                  "MANGA ENG",
+                                                ),
+                                              ),
+                                            ],
                                           )
-                                        )
+                                        ),
                                       ),
                                       new Text("O"),
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.of(context).pop();
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) => ListPage()));
-                                        },
-                                        child:  new Container(
-                                          padding: const EdgeInsets.all(10.0),
-                                          decoration: DecorationService.decBlue(),
-                                          child:Center(
-                                            child:Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                Padding(
-                                                  padding: const EdgeInsets.all(10.0),
-                                                  child:  new Icon(Icons.ondemand_video, size: 60.0),
+                                      new Container(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child:Center(
+                                          child:Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: const EdgeInsets.all(10.0),
+                                                child:  new Icon(Icons.ondemand_video, size: 40.0),
+                                              ),
+                                              FlatButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  Navigator.push(context, MaterialPageRoute(builder: (context) => ListPage()));
+                                                },
+                                                color: Colors.blue,
+                                                textColor: Colors.white,
+                                                disabledColor: Colors.grey,
+                                                disabledTextColor: Colors.black,
+                                                padding: EdgeInsets.all(8.0),
+                                                splashColor: Colors.blueAccent,
+                                                child: Text(
+                                                  "ANIME",
                                                 ),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(10.0),
-                                                  child: Text("ANIME"),
-                                                )
-                                              ],
-                                            )
+                                              ),
+                                            ],
                                           )
                                         )
-                                      ),
-                                      
-                                      
+                                      )
                                     ],
                                   ),
                                 )

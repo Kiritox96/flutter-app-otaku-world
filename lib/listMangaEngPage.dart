@@ -6,13 +6,13 @@ import 'decoration.dart';
 import 'rest_api.dart';
 import 'manga.dart';
 
-class ListMangaPage extends StatefulWidget {
-  const ListMangaPage();
+class ListMangaEngPage extends StatefulWidget {
+  const ListMangaEngPage();
   @override
-  _ListMangaPageState createState() => new _ListMangaPageState();
+  _ListMangaEngPageState createState() => new _ListMangaEngPageState();
 }
 
-class _ListMangaPageState extends State<ListMangaPage> with UnityAdsListener{
+class _ListMangaEngPageState extends State<ListMangaEngPage> with UnityAdsListener{
   static final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   TextEditingController _searchQuery;
   bool _isSearching = false;
@@ -117,7 +117,7 @@ class _ListMangaPageState extends State<ListMangaPage> with UnityAdsListener{
   Widget all(){
     if(this._isSearching ==false){
       return new FutureBuilder(
-        future: Future.wait([ApiService.getMangas('1')]),
+        future: Future.wait([ApiService.getMangas('0')]),
         builder: (context, AsyncSnapshot<List> snapshot) {
           if (snapshot.hasData) {
             List all = snapshot.data[0]['manga'];
@@ -148,11 +148,9 @@ class _ListMangaPageState extends State<ListMangaPage> with UnityAdsListener{
                             margin: EdgeInsets.only(right: 10.0, left: 10.0),
                             child: new Text(all[index]['t'], textAlign: TextAlign.center,),
                           ))
-                        
                         ],
                       )
                     ) 
-                   
                   )
                 );
               })
@@ -166,53 +164,49 @@ class _ListMangaPageState extends State<ListMangaPage> with UnityAdsListener{
     }
     else if(this._isSearching == true && this.searchQuery != '' ){
       return new FutureBuilder(
-        future: Future.wait([ApiService.getMangas('1')]),
+        future: Future.wait([ApiService.getMangas('0')]),
         builder: (context, AsyncSnapshot<List> snapshot) {
           if (snapshot.hasData) {
-            dynamic all = snapshot.data[0];
-            if(all != null){
-              all = all['manga'];
-
-              all.removeWhere((manga) => manga['im'] == null);
-              print(all.length);
-              List all2 = all.where((manga) => manga['t'].toString().toLowerCase().contains(this.searchQuery.toLowerCase())).toList();
-              print(all2.length);
-              all2.sort((a, b) => a['t'].compareTo(b['t']));
-              if(all2.length > 0){
-                return new GridView.count(
-                  crossAxisCount: 2,
-                  children: List.generate(all2.length, (index) {
-                    return Center(
-                      child:GestureDetector(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => MangaPage(all2[index]['i'], all2[index]['t'])));
-                        },
-                        child: Container(
-                          decoration: DecorationService.decEvidenza(),
-                          height: MediaQuery.of(context).size.width / 2,
-                          margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Expanded(child:Container(
-                                margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
-                                width:150,
-                                height: 100,
-                                decoration: DecorationService.decNoShadow('https://cdn.mangaeden.com/mangasimg/' + all2[index]['im']),
-                              )),
-                              Expanded(child:Container(
-                                margin: EdgeInsets.only(right: 10.0, left: 10.0),
-                                child: new Text(all2[index]['t'], textAlign: TextAlign.center,),
-                              ))
-                            
-                            ],
-                          )
-                        ) 
-                      )
-                    );
-                  })
-                );
-              }
+            List all = snapshot.data[0]['manga'];
+            all.removeWhere((manga) => manga['im'] == null);
+            print(all.length);
+            List all2 = all.where((manga) => manga['t'].toString().toLowerCase().contains(this.searchQuery.toLowerCase())).toList();
+            print(all2.length);
+            all2.sort((a, b) => a['t'].compareTo(b['t']));
+            if(all2.length > 0){
+              return new GridView.count(
+                crossAxisCount: 2,
+                children: List.generate(all2.length, (index) {
+                  return Center(
+                    child:GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => MangaPage(all2[index]['i'], all2[index]['t'])));
+                      },
+                      child: Container(
+                        decoration: DecorationService.decEvidenza(),
+                        height: MediaQuery.of(context).size.width / 2,
+                        margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Expanded(child:Container(
+                              margin: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+                              width:150,
+                              height: 100,
+                              decoration: DecorationService.decNoShadow('https://cdn.mangaeden.com/mangasimg/' + all2[index]['im']),
+                            )),
+                            Expanded(child:Container(
+                              margin: EdgeInsets.only(right: 10.0, left: 10.0),
+                              child: new Text(all2[index]['t'], textAlign: TextAlign.center,),
+                            ))
+                          
+                          ],
+                        )
+                      ) 
+                    )
+                  );
+                })
+              );
             }
             else{
               return Center(
