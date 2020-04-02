@@ -7,8 +7,8 @@ class URLS {
 }
 
 class ApiService {
-  static Future<dynamic> getMangas() async {
-    final response = await http.get('${URLS.BASE_URL}/manga/5be372f8719a160a9e36dbaa?all=1');
+  static Future<dynamic> getMangas(String n) async {
+    final response = await http.get('${URLS.BASE_URL}/manga/5be372f8719a160a9e36dbaa?all='+n);
     if (response.statusCode == 200) {
       var jsonObj = json.decode(response.body);
       return jsonObj;

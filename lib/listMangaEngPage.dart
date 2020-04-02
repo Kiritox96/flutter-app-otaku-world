@@ -6,13 +6,13 @@ import 'decoration.dart';
 import 'rest_api.dart';
 import 'manga.dart';
 
-class ListMangaPage extends StatefulWidget {
-  const ListMangaPage();
+class ListMangaEngPage extends StatefulWidget {
+  const ListMangaEngPage();
   @override
-  _ListMangaPageState createState() => new _ListMangaPageState();
+  _ListMangaEngPageState createState() => new _ListMangaEngPageState();
 }
 
-class _ListMangaPageState extends State<ListMangaPage> with UnityAdsListener{
+class _ListMangaEngPageState extends State<ListMangaEngPage> with UnityAdsListener{
   static final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   TextEditingController _searchQuery;
   bool _isSearching = false;
@@ -117,7 +117,7 @@ class _ListMangaPageState extends State<ListMangaPage> with UnityAdsListener{
   Widget all(){
     if(this._isSearching ==false){
       return new FutureBuilder(
-        future: Future.wait([ApiService.getMangas('1')]),
+        future: Future.wait([ApiService.getMangas('0')]),
         builder: (context, AsyncSnapshot<List> snapshot) {
           if (snapshot.hasData) {
             List all = snapshot.data[0]['manga'];
@@ -166,7 +166,7 @@ class _ListMangaPageState extends State<ListMangaPage> with UnityAdsListener{
     }
     else if(this._isSearching == true && this.searchQuery != '' ){
       return new FutureBuilder(
-        future: Future.wait([ApiService.getMangas('1')]),
+        future: Future.wait([ApiService.getMangas('0')]),
         builder: (context, AsyncSnapshot<List> snapshot) {
           if (snapshot.hasData) {
             List all = snapshot.data[0]['manga'];
